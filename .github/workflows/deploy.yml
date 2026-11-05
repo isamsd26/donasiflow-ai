@@ -1,0 +1,34 @@
+name: Deploy DonasiFlow
+
+on:
+  workflow_dispatch:
+
+jobs:
+  deploy:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Deploy via SSH (Manual Trigger)
+        uses: appleboy/ssh-action@v1.0.3
+        with:
+          host: ${{ secrets.SSH_HOST }}
+          username: ${{ secrets.SSH_USER }}
+          key: ${{ secrets.SSH_KEY }}
+          port: ${{ secrets.SSH_PORT }}
+          script: |
+            set -e
+            cd ${{ secrets.APP_PATH }}
+            php artisan down || true
+            trap 'php artisan up || true' EXIT
+            git fetch origin main
+            git reset --hard origin/main
+            git clean -fd
+            composer install --no-interaction --prefer-dist --optimize-autoloader --ignore-platform-reqs
+            php artisan migrate --force
+            php artisan storage:link || true
+            php artisan optimize:clear
+            php artisan config:cache
+            php artisan route:cache
+            php artisan view:cache
+            php artisan up
+            trap - EXIT
