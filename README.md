@@ -28,22 +28,33 @@ Non-profit foundations often struggle with fragmented donation records, manual p
 ## System Architecture
 
 ```mermaid
-flowchart LR
-    Donor["Public Donor"] -->|"Browse, Donate & PDF Invoice"| Laravel["Laravel 12 Core App"]
-    Admin["Foundation Admin"] -->|"CMS, Reports & AI Analyst (/admin)"| Laravel
+flowchart TD
+    subgraph Clients["Users"]
+        Donor["Public Donor"]
+        Admin["Foundation Admin"]
+    end
 
-    Laravel -->|"Eloquent ORM"| DB[("SQLite / MariaDB / MySQL")]
-    Laravel -->|"Snap / Payment API"| Midtrans["Midtrans Payment Gateway"]
-    Midtrans -->|"POST /api/midtrans/notification"| Laravel
+    subgraph Core["Core Application"]
+        Laravel["Laravel 12 Core App"]
+        DB[("SQLite / MariaDB")]
+        Reports["DomPDF & Excel Reports"]
+    end
 
-    Laravel -->|"MetaWaService (Graph API v19.0)"| MetaWA["Meta WhatsApp Cloud API"]
-    MetaWA -->|"Pending / Paid Templates"| Donor
-    MetaWA -->|"New Donation Alert"| Admin
+    subgraph External["External Services & AI Microservice"]
+        Midtrans["Midtrans Payment Gateway"]
+        MetaWA["Meta WhatsApp Cloud API"]
+        FastAPI["Python FastAPI Service"]
+        Gemini["Google Gemini GenAI"]
+    end
 
-    Laravel -->|"POST /api/analyze-finance (Aggregated JSON)"| FastAPI["Python FastAPI Microservice (:8001)"]
-    FastAPI -->|"Multi-Model Fallback"| Gemini["Google Gemini GenAI API"]
-
-    Laravel -->|"DomPDF & Maatwebsite Excel"| Reports["PDF Invoices & Excel Reports"]
+    Donor -->|Browse & Donate| Laravel
+    Admin -->|CMS & AI Analyst| Laravel
+    Laravel -->|Eloquent ORM| DB
+    Laravel -->|Generate Invoice & Export| Reports
+    Laravel <-->|Snap API & Webhook| Midtrans
+    Laravel -->|WA Notification Templates| MetaWA
+    Laravel -->|Aggregated Financial JSON| FastAPI
+    FastAPI -->|Multi-Model Fallback| Gemini
 ```
 
 ---
