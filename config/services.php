@@ -42,4 +42,9 @@ return [
         'merchant_id' => env('MIDTRANS_MERCHANT_ID'),
     ],
 
+    'ai_service' => [
+        'url' => rtrim((string) env('AI_SERVICE_URL', 'http://127.0.0.1:8001'), '/'),
+        'timeout' => (int) env('AI_SERVICE_TIMEOUT', 45),
+    ],
+
 ];
