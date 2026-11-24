@@ -16,7 +16,7 @@ class CustomErrorPagesTest extends TestCase
         $response->assertStatus(404);
         $response->assertSee('404');
         $response->assertSee('Halaman yang Anda Cari Tidak Ditemukan');
-        $response->assertSee('Yayasan Riyadhush Sholihin');
+        $response->assertSee('Yayasan DonasiFlow Nusantara');
         $response->assertSee('Kembali ke Beranda');
     }
 
@@ -35,7 +35,7 @@ class CustomErrorPagesTest extends TestCase
         foreach ($views as $viewName) {
             $rendered = view($viewName)->render();
             $this->assertNotEmpty($rendered);
-            $this->assertStringContainsString('Yayasan Riyadhush Sholihin', $rendered);
+            $this->assertStringContainsString('Yayasan DonasiFlow Nusantara', $rendered);
         }
     }
 }

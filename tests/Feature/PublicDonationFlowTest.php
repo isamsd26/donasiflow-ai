@@ -65,8 +65,8 @@ class PublicDonationFlowTest extends TestCase
         $this->assertGreaterThanOrEqual(1, $donation->unique_code);
         $this->assertLessThanOrEqual(999, $donation->unique_code);
         $this->assertSame(100000 + $donation->unique_code, (int) $donation->amount);
-        $this->assertSame('BSI', $donation->payment_bank);
-        $this->assertSame('7063488245', $donation->payment_account_number);
+        $this->assertSame('Bank Syariah Nasional', $donation->payment_bank);
+        $this->assertSame('8899001122', $donation->payment_account_number);
         $this->assertDatabaseHas('payment_transactions', [
             'donation_id' => $donation?->id,
             'gateway' => 'bank_transfer',

@@ -24,6 +24,7 @@ Thumbs.db
 github-actions-deploy
 github-actions-deploy.pub
 /ai-service/venv
+/.venv
 __pycache__/
 *.pyc
 /LAPORAN_AUDIT_WHITELABEL_AI.*
