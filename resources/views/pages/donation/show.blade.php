@@ -6,32 +6,32 @@
             'pending' => ['label' => 'Menunggu Transfer', 'class' => 'bg-[#fff4da] text-[#9a6700]'],
             'paid' => ['label' => 'Donasi Diterima', 'class' => 'bg-[#e8f8ef] text-[#18794e]'],
             'failed' => ['label' => 'Verifikasi Gagal', 'class' => 'bg-[#fff1f1] text-[#b42318]'],
-            'expired' => ['label' => 'Kedaluwarsa', 'class' => 'bg-[#eef2f6] text-[#64748b]'],
-            'refunded' => ['label' => 'Dikembalikan', 'class' => 'bg-[#eef5ff] text-pm-blue'],
-        ][$donation->status] ?? ['label' => str($donation->status)->headline(), 'class' => 'bg-[#eef5ff] text-pm-blue'];
+            'expired' => ['label' => 'Kedaluwarsa', 'class' => 'bg-[#eef2f6] text-muted'],
+            'refunded' => ['label' => 'Dikembalikan', 'class' => 'bg-brand-soft text-brand'],
+        ][$donation->status] ?? ['label' => str($donation->status)->headline(), 'class' => 'bg-brand-soft text-brand'];
     @endphp
 
     <div class="mx-auto w-[min(980px,calc(100%-1rem))] space-y-5">
-        <section class="rounded-[24px] bg-[linear-gradient(135deg,#1e293b,#059669)] px-5 py-6 text-white shadow-[0_18px_40px_rgba(15,23,42,0.16)] sm:rounded-[30px] sm:px-8 sm:py-8">
-            <p class="text-[11px] uppercase tracking-[0.28em] text-emerald-100">Status Donasi</p>
+        <section class="rounded-xl border border-line bg-brand-deep px-5 py-6 text-white  sm:px-8 sm:py-8">
+            <p class="text-[11px] uppercase tracking-[0.28em] text-white/75">Status Donasi</p>
             <h1 class="mt-3 font-display text-[2.45rem] leading-none sm:text-[3.2rem]">{{ $donation->reference }}</h1>
             
             @if ($donation->status === 'pending' && $donation->expires_at)
-                <div class="mt-5 rounded-2xl bg-white/10 px-5 py-4 border border-white/20 inline-block">
-                    <p class="text-[10px] uppercase tracking-[0.15em] text-emerald-100">Sisa Waktu Transfer</p>
+                <div class="mt-5 rounded-lg bg-white/10 px-5 py-4 border border-white/20 inline-block">
+                    <p class="text-[10px] uppercase tracking-[0.15em] text-white/75">Sisa Waktu Transfer</p>
                     <p id="header-countdown" class="mt-1 font-mono text-3xl font-bold tracking-wider text-white">
                         --:--:--
                     </p>
                 </div>
             @endif
 
-            <p class="mt-4 max-w-3xl text-sm leading-7 text-emerald-50/90">
+            <p class="mt-4 max-w-3xl text-sm leading-7 text-white/85">
                 Donasi Anda sudah tercatat. Silakan transfer sesuai total unik agar admin mudah mencocokkan dana masuk di mutasi rekening.
             </p>
             <div class="mt-5 flex flex-wrap gap-3">
                 <a
                     href="{{ route('donation.invoice', $donation->reference) }}"
-                    class="rounded-full bg-white px-4 py-2 text-sm font-semibold text-pm-blue transition hover:bg-emerald-50"
+                    class="rounded-full bg-white px-4 py-2 text-sm font-semibold text-brand transition hover:bg-emerald-50"
                 >
                     Download Invoice
                 </a>
@@ -43,41 +43,41 @@
                     Salin Link Status
                 </button>
             </div>
-            <p class="mt-3 text-xs text-emerald-100/90">Simpan link status atau unduh invoice agar Anda bisa mengecek status donasi lagi tanpa login.</p>
+            <p class="mt-3 text-xs text-white/75/90">Simpan link status atau unduh invoice agar Anda bisa mengecek status donasi lagi tanpa login.</p>
         </section>
 
         <section class="grid gap-5 lg:grid-cols-[1.05fr_0.95fr]">
-            <div class="rounded-[24px] bg-white px-4 py-5 shadow-[0_16px_34px_rgba(15,23,42,0.08)] sm:rounded-[28px] sm:px-5 sm:py-6">
-                <p class="text-[10px] font-semibold uppercase tracking-[0.18em] text-pm-blue">Ringkasan Donasi</p>
+            <div class="rounded-xl border border-line bg-surface px-4 py-5  sm:px-5 sm:py-6">
+                <p class="text-[10px] font-semibold uppercase tracking-[0.18em] text-brand">Ringkasan Donasi</p>
                 <div class="mt-4 grid gap-3">
-                    <div class="rounded-2xl border border-[#e2e8f0] px-4 py-3">
-                        <p class="text-[10px] uppercase tracking-[0.14em] text-pm-muted">Campaign</p>
-                        <p class="mt-2 text-lg font-semibold text-[#1e293b]">{{ $donation->campaign?->title ?? '-' }}</p>
+                    <div class="rounded-lg border border-line px-4 py-3">
+                        <p class="text-[10px] uppercase tracking-[0.14em] text-muted">Campaign</p>
+                        <p class="mt-2 text-lg font-semibold text-ink">{{ $donation->campaign?->title ?? '-' }}</p>
                     </div>
-                    <div class="rounded-2xl border border-[#e2e8f0] px-4 py-3">
-                        <p class="text-[10px] uppercase tracking-[0.14em] text-pm-muted">Nominal Donasi</p>
-                        <p class="mt-2 text-lg font-semibold text-[#1e293b]">Rp {{ number_format((float) ($donation->base_amount ?: $donation->amount), 0, ',', '.') }}</p>
+                    <div class="rounded-lg border border-line px-4 py-3">
+                        <p class="text-[10px] uppercase tracking-[0.14em] text-muted">Nominal Donasi</p>
+                        <p class="mt-2 text-lg font-semibold text-ink">Rp {{ number_format((float) ($donation->base_amount ?: $donation->amount), 0, ',', '.') }}</p>
                     </div>
-                    <div class="rounded-2xl border border-[#e2e8f0] px-4 py-3">
-                        <p class="text-[10px] uppercase tracking-[0.14em] text-pm-muted">Kode Unik Verifikasi</p>
-                        <p class="mt-2 text-lg font-semibold text-[#1e293b]">Rp {{ number_format((int) $donation->unique_code, 0, ',', '.') }}</p>
-                        <p class="mt-2 text-xs leading-5 text-[#64748b]">Tambahan angka ini masuk sebagai bagian dari donasi dan membantu admin menemukan transfer Anda di mutasi rekening.</p>
+                    <div class="rounded-lg border border-line px-4 py-3">
+                        <p class="text-[10px] uppercase tracking-[0.14em] text-muted">Kode Unik Verifikasi</p>
+                        <p class="mt-2 text-lg font-semibold text-ink">Rp {{ number_format((int) $donation->unique_code, 0, ',', '.') }}</p>
+                        <p class="mt-2 text-xs leading-5 text-muted">Tambahan angka ini masuk sebagai bagian dari donasi dan membantu admin menemukan transfer Anda di mutasi rekening.</p>
                     </div>
-                    <div class="rounded-2xl border border-[#e2e8f0] bg-[#f8fafc] px-4 py-3">
-                        <p class="text-[10px] uppercase tracking-[0.14em] text-pm-muted">Total Yang Harus Ditransfer</p>
-                        <p class="mt-2 text-2xl font-semibold text-[#1e293b]">Rp {{ number_format((float) $donation->amount, 0, ',', '.') }}</p>
+                    <div class="rounded-lg border border-line bg-canvas px-4 py-3">
+                        <p class="text-[10px] uppercase tracking-[0.14em] text-muted">Total Yang Harus Ditransfer</p>
+                        <p class="mt-2 text-2xl font-semibold text-ink">Rp {{ number_format((float) $donation->amount, 0, ',', '.') }}</p>
                     </div>
-                    <div class="rounded-2xl border border-[#e2e8f0] px-4 py-3">
-                        <p class="text-[10px] uppercase tracking-[0.14em] text-pm-muted">Status</p>
+                    <div class="rounded-lg border border-line px-4 py-3">
+                        <p class="text-[10px] uppercase tracking-[0.14em] text-muted">Status</p>
                         <p class="mt-2 inline-flex rounded-full px-3 py-1 text-sm font-semibold {{ $statusMeta['class'] }}">{{ $statusMeta['label'] }}</p>
                     </div>
-                    <div class="rounded-2xl border border-[#e2e8f0] px-4 py-3">
-                        <p class="text-[10px] uppercase tracking-[0.14em] text-pm-muted">Dibuat</p>
-                        <p class="mt-2 text-lg font-semibold text-[#1e293b]">{{ optional($donation->created_at)->translatedFormat('d F Y, H:i') }}</p>
+                    <div class="rounded-lg border border-line px-4 py-3">
+                        <p class="text-[10px] uppercase tracking-[0.14em] text-muted">Dibuat</p>
+                        <p class="mt-2 text-lg font-semibold text-ink">{{ optional($donation->created_at)->translatedFormat('d F Y, H:i') }}</p>
                     </div>
-                    <div class="rounded-2xl border border-[#e2e8f0] px-4 py-3">
-                        <p class="text-[10px] uppercase tracking-[0.14em] text-pm-muted">Batas Status Pending</p>
-                        <p class="mt-2 text-lg font-semibold text-[#1e293b]">
+                    <div class="rounded-lg border border-line px-4 py-3">
+                        <p class="text-[10px] uppercase tracking-[0.14em] text-muted">Batas Status Pending</p>
+                        <p class="mt-2 text-lg font-semibold text-ink">
                             {{ $donation->expires_at ? $donation->expires_at->translatedFormat('d F Y, H:i') : 'Belum ditentukan' }}
                         </p>
                     </div>
@@ -86,13 +86,13 @@
 
             <div class="space-y-5">
                 @if ($transaction && $transaction->gateway === 'midtrans')
-                    <div class="rounded-[24px] border border-[#e2e8f0] bg-[#f8fafc] px-4 py-5 shadow-[0_16px_34px_rgba(15,23,42,0.05)] sm:rounded-[28px] sm:px-5 sm:py-6">
-                        <p class="text-[10px] font-semibold uppercase tracking-[0.18em] text-pm-blue">Pembayaran Midtrans</p>
-                        <div class="mt-4 text-sm leading-7 text-[#334155]">
+                    <div class="rounded-xl border border-line bg-canvas px-4 py-5 shadow-[0_16px_34px_rgba(15,23,42,0.05)] sm:rounded-xl sm:px-5 sm:py-6">
+                        <p class="text-[10px] font-semibold uppercase tracking-[0.18em] text-brand">Pembayaran Midtrans</p>
+                        <div class="mt-4 text-sm leading-7 text-ink-soft">
                             @if ($donation->status === 'pending')
                                 <p>Silakan klik tombol di bawah ini untuk memunculkan popup pembayaran dan memilih metode yang Anda inginkan (QRIS, Virtual Account, GoPay, dll).</p>
                                 <div class="mt-5">
-                                    <button type="button" id="pay-button" class="inline-flex rounded-full bg-pm-blue px-6 py-3 text-sm font-semibold text-white transition hover:bg-pm-blue/90">
+                                    <button type="button" id="pay-button" class="inline-flex rounded-full bg-brand px-6 py-3 text-sm font-semibold text-white transition hover:bg-brand/90">
                                         Bayar Sekarang
                                     </button>
                                 </div>
@@ -104,32 +104,32 @@
                         </div>
                     </div>
                 @else
-                    <div class="rounded-[24px] border border-[#e2e8f0] bg-[#f8fafc] px-4 py-5 shadow-[0_16px_34px_rgba(15,23,42,0.05)] sm:rounded-[28px] sm:px-5 sm:py-6">
-                        <p class="text-[10px] font-semibold uppercase tracking-[0.18em] text-pm-blue">Rekening Tujuan</p>
+                    <div class="rounded-xl border border-line bg-canvas px-4 py-5 shadow-[0_16px_34px_rgba(15,23,42,0.05)] sm:rounded-xl sm:px-5 sm:py-6">
+                        <p class="text-[10px] font-semibold uppercase tracking-[0.18em] text-brand">Rekening Tujuan</p>
                         <div class="mt-4 grid gap-3">
-                            <div class="rounded-2xl border border-[#e2e8f0] bg-white px-4 py-3">
-                                <p class="text-[10px] uppercase tracking-[0.14em] text-pm-muted">Bank</p>
-                                <p class="mt-2 text-lg font-semibold text-[#1e293b]">{{ $donation->payment_bank ?: 'Bank Syariah Nasional' }}</p>
+                            <div class="rounded-lg border border-line bg-white px-4 py-3">
+                                <p class="text-[10px] uppercase tracking-[0.14em] text-muted">Bank</p>
+                                <p class="mt-2 text-lg font-semibold text-ink">{{ $donation->payment_bank ?: 'Bank Syariah Nasional' }}</p>
                             </div>
-                            <div class="rounded-2xl border border-[#e2e8f0] bg-white px-4 py-3">
-                                <p class="text-[10px] uppercase tracking-[0.14em] text-pm-muted">Nomor Rekening</p>
+                            <div class="rounded-lg border border-line bg-white px-4 py-3">
+                                <p class="text-[10px] uppercase tracking-[0.14em] text-muted">Nomor Rekening</p>
                                 <div class="mt-2 flex flex-wrap items-center gap-2">
-                                    <p class="font-mono text-lg font-semibold text-[#1e293b]">{{ $donation->payment_account_number ?: '-' }}</p>
+                                    <p class="font-mono text-lg font-semibold text-ink">{{ $donation->payment_account_number ?: '-' }}</p>
                                     @if ($donation->payment_account_number)
-                                        <button type="button" data-copy-text="{{ $donation->payment_account_number }}" class="rounded-full border border-[#e2e8f0] px-3 py-1 text-xs font-semibold text-[#334155]">Salin</button>
+                                        <button type="button" data-copy-text="{{ $donation->payment_account_number }}" class="rounded-full border border-line px-3 py-1 text-xs font-semibold text-ink-soft">Salin</button>
                                     @endif
                                 </div>
                             </div>
-                            <div class="rounded-2xl border border-[#e2e8f0] bg-white px-4 py-3">
-                                <p class="text-[10px] uppercase tracking-[0.14em] text-pm-muted">Atas Nama</p>
-                                <p class="mt-2 text-lg font-semibold text-[#1e293b]">{{ $donation->payment_account_name ?: '-' }}</p>
+                            <div class="rounded-lg border border-line bg-white px-4 py-3">
+                                <p class="text-[10px] uppercase tracking-[0.14em] text-muted">Atas Nama</p>
+                                <p class="mt-2 text-lg font-semibold text-ink">{{ $donation->payment_account_name ?: '-' }}</p>
                             </div>
                         </div>
                     </div>
 
-                    <div class="rounded-[24px] bg-white px-4 py-5 shadow-[0_16px_34px_rgba(15,23,42,0.08)] sm:rounded-[28px] sm:px-5 sm:py-6">
-                        <p class="text-[10px] font-semibold uppercase tracking-[0.18em] text-pm-blue">Setelah Transfer</p>
-                        <div class="mt-4 space-y-3 text-sm leading-7 text-[#334155]">
+                    <div class="rounded-xl border border-line bg-surface px-4 py-5  sm:px-5 sm:py-6">
+                        <p class="text-[10px] font-semibold uppercase tracking-[0.18em] text-brand">Setelah Transfer</p>
+                        <div class="mt-4 space-y-3 text-sm leading-7 text-ink-soft">
                             @if ($donation->status === 'paid')
                                 <p><strong>Terima kasih.</strong> Donasi Anda sudah diterima dan diverifikasi admin.</p>
                                 <p>Waktu verifikasi: {{ $donation->verified_at ? $donation->verified_at->translatedFormat('d F Y, H:i') : optional($donation->paid_at)->translatedFormat('d F Y, H:i') }}.</p>
@@ -150,10 +150,10 @@
                     </div>
                 @endif
 
-                <div class="rounded-[24px] bg-[linear-gradient(135deg,#1e293b,#059669)] px-4 py-5 text-white shadow-[0_16px_34px_rgba(15,23,42,0.12)] sm:rounded-[28px] sm:px-5 sm:py-6">
-                    <p class="text-[10px] uppercase tracking-[0.18em] text-emerald-100">Aksi Berikutnya</p>
+                <div class="rounded-xl bg-brand-deep px-4 py-5 text-white shadow-[0_16px_34px_rgba(15,23,42,0.12)] sm:rounded-xl sm:px-5 sm:py-6">
+                    <p class="text-[10px] uppercase tracking-[0.18em] text-white/75">Aksi Berikutnya</p>
                     <div class="mt-4 flex flex-wrap gap-3">
-                        <a href="{{ route('campaign.show', $donation->campaign?->slug ?? '') }}" class="rounded-full bg-white px-4 py-2 text-sm font-semibold text-pm-blue">Kembali ke Campaign</a>
+                        <a href="{{ route('campaign.show', $donation->campaign?->slug ?? '') }}" class="rounded-full bg-white px-4 py-2 text-sm font-semibold text-brand">Kembali ke Campaign</a>
                         <a href="{{ route('donation.lookup', ['reference' => $donation->reference]) }}" class="rounded-full border border-white/20 bg-white/10 px-4 py-2 text-sm font-semibold text-white">Buka via Cek Status</a>
                         <a href="{{ route('campaign.index') }}" class="rounded-full border border-white/20 bg-white/10 px-4 py-2 text-sm font-semibold text-white">Lihat Campaign Lain</a>
                     </div>

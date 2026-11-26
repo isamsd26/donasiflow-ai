@@ -8,20 +8,67 @@
 @theme {
     --font-sans: 'Plus Jakarta Sans', ui-sans-serif, system-ui, sans-serif, 'Apple Color Emoji', 'Segoe UI Emoji',
         'Segoe UI Symbol', 'Noto Color Emoji';
-    --font-display: 'Oswald', ui-sans-serif, system-ui, sans-serif;
-    --color-pm-blue: #059669;
-    --color-pm-blue-deep: #047857;
-    --color-pm-blue-soft: #d1fae5;
-    --color-pm-bg: #f1f5f9;
-    --color-pm-card: #ffffff;
-    --color-pm-border: #e2e8f0;
-    --color-pm-text: #1e293b;
-    --color-pm-muted: #64748b;
-    --color-pm-yellow: #f2c232;
+    --font-display: 'Newsreader', Georgia, 'Times New Roman', serif;
+    --font-mono: 'JetBrains Mono', ui-monospace, SFMono-Regular, Menlo, monospace;
+
+    /* DonasiFlow Editorial Philanthropy & Financial Brief Palette */
+    --color-brand: #0E4D45;
+    --color-brand-deep: #093630;
+    --color-brand-soft: #E9F5F0;
+    --color-ochre: #C47E2C;
+    --color-ochre-soft: #FDF3E3;
+    --color-ochre-ink: #8C5310;
+    --color-canvas: #FAF9F7;
+    --color-surface: #FFFFFF;
+    --color-surface-subtle: #F4F3EF;
+    --color-line: #E5E4DE;
+    --color-line-strong: #D4D2C9;
+    --color-ink: #14181F;
+    --color-ink-soft: #2C333D;
+    --color-muted: #5C6470;
+    --color-danger: #A62626;
+    --color-danger-soft: #FCECEC;
+
+    /* Legacy token aliases (mapped cleanly to new system during transition) */
+    --color-pm-blue: #0E4D45;
+    --color-pm-blue-deep: #093630;
+    --color-pm-blue-soft: #E9F5F0;
+    --color-pm-bg: #FAF9F7;
+    --color-pm-card: #FFFFFF;
+    --color-pm-border: #E5E4DE;
+    --color-pm-text: #14181F;
+    --color-pm-muted: #5C6470;
+    --color-pm-yellow: #C47E2C;
 }
 
 @layer base {
+    html {
+        scroll-behavior: smooth;
+    }
+
     body {
-        @apply m-0 bg-pm-bg font-sans text-pm-text;
+        @apply m-0 bg-canvas font-sans text-ink antialiased selection:bg-brand-soft selection:text-brand;
+    }
+
+    h1, h2, h3, .font-display {
+        letter-spacing: -0.02em;
+    }
+
+    :focus-visible {
+        outline: 2px solid var(--color-brand);
+        outline-offset: 2px;
+    }
+}
+
+.tabular-nums {
+    font-variant-numeric: tabular-nums;
+}
+
+@media (prefers-reduced-motion: reduce) {
+    *, *::before, *::after {
+        animation-duration: 0.01ms !important;
+        animation-iteration-count: 1 !important;
+        transition-duration: 0.01ms !important;
+        scroll-behavior: auto !important;
     }
 }

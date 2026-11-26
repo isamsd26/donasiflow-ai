@@ -1,159 +1,197 @@
 @extends('layouts.public')
 
 @section('content')
-    <div class="mx-auto w-[min(1120px,calc(100%-1rem))] space-y-5">
-        <section class="grid gap-5 lg:grid-cols-[0.95fr_1.05fr]">
-            <div class="overflow-hidden rounded-[24px] bg-[linear-gradient(135deg,#1e293b,#059669)] shadow-[0_18px_40px_rgba(15,23,42,0.16)] sm:rounded-[30px]">
-                <div class="relative min-h-[280px] p-5 text-white sm:min-h-[360px] sm:p-6" style="background: {{ $campaign['cover'] }};">
-                    <div class="absolute inset-0 bg-[linear-gradient(180deg,rgba(4,19,37,0.10),rgba(4,19,37,0.36))]"></div>
-                    <div class="relative flex h-full flex-col justify-between">
-                        <div class="flex items-start justify-between gap-3">
-                            <span class="rounded-full border border-white/20 bg-white/12 px-3 py-1 text-[10px] font-semibold uppercase tracking-[0.18em]">{{ $campaign['status_label'] }}</span>
-                            <span class="rounded-full bg-black/20 px-3 py-1 text-[10px]">{{ $campaign['days_left'] }}</span>
-                        </div>
+    @php
+        $progressVal = (int) ($campaign['progress'] ?? 0);
+        $isUrgent = $progressVal < 35 && ($campaign['status'] ?? '') === 'active';
+    @endphp
 
-                        <div>
-                            <p class="text-xs uppercase tracking-[0.2em] text-emerald-100">{{ $campaign['organizer'] }}</p>
-                            <h1 class="mt-3 max-w-lg font-display text-[2.35rem] leading-[0.92] tracking-tight sm:text-[3.2rem]">{{ $campaign['title'] }}</h1>
-                            <p class="mt-4 max-w-xl text-sm leading-6 sm:leading-7 text-emerald-50/90">{{ $campaign['summary'] }}</p>
-                        </div>
-                    </div>
-                </div>
+    {{-- Top Editorial Overview --}}
+    <section class="border-b border-line bg-canvas py-8 sm:py-12">
+        <div class="mx-auto w-full max-w-6xl px-4 sm:px-6 lg:px-8">
+            <div class="mb-5 flex items-center gap-2 text-xs text-muted">
+                <a href="{{ route('home') }}" class="hover:text-ink">Beranda</a>
+                <span>/</span>
+                <a href="{{ route('campaign.index') }}" class="hover:text-ink">Program</a>
+                <span>/</span>
+                <span class="truncate text-ink">{{ $campaign['title'] }}</span>
             </div>
 
-            <div class="space-y-5">
-                <div class="rounded-[24px] bg-white px-4 py-5 shadow-[0_16px_34px_rgba(15,23,42,0.08)] sm:rounded-[28px] sm:px-5 sm:py-6">
-                    <p class="text-[10px] font-semibold uppercase tracking-[0.18em] text-pm-blue">Progress Campaign</p>
-                    <div class="mt-4 grid gap-4 sm:grid-cols-2">
-                        <div>
-                            <p class="text-xs text-pm-muted">Terkumpul</p>
-                            <p class="mt-2 font-display text-[2rem] leading-none text-[#1e293b] sm:text-4xl">{{ $campaign['collected'] }}</p>
+            <div class="grid gap-8 lg:grid-cols-[1.1fr_0.9fr] lg:items-start">
+                {{-- Cover Story Visual --}}
+                <div class="overflow-hidden rounded-xl border border-line bg-brand-deep text-white">
+                    <div class="relative flex min-h-[320px] flex-col justify-between p-6 sm:min-h-[400px] sm:p-8" style="background: {{ $campaign['cover'] }};">
+                        <div class="absolute inset-0 bg-gradient-to-t from-[#0B1418]/85 via-[#0B1418]/30 to-[#0B1418]/15"></div>
+                        <div class="relative flex items-center justify-between gap-3 text-xs">
+                            <span class="rounded-md bg-black/35 px-2.5 py-1 font-medium backdrop-blur-[2px]">{{ $campaign['status_label'] }}</span>
+                            <span class="rounded-md bg-black/35 px-2.5 py-1 font-medium tabular-nums backdrop-blur-[2px]">{{ $campaign['days_left'] }}</span>
                         </div>
-                        <div>
-                            <p class="text-xs text-pm-muted">Target</p>
-                            <p class="mt-2 font-display text-[2rem] leading-none text-[#1e293b] sm:text-4xl">{{ $campaign['target'] }}</p>
-                        </div>
-                    </div>
 
-                    <div class="mt-4 h-2 rounded-full bg-[#e2e8f0]">
-                        <div class="h-full rounded-full bg-pm-blue" style="width: {{ $campaign['progress'] }}%"></div>
-                    </div>
-
-                    <div class="mt-3 grid gap-3 sm:grid-cols-3">
-                        <div class="rounded-2xl bg-[#f8fafc] px-4 py-3">
-                            <p class="text-[10px] uppercase tracking-[0.14em] text-pm-muted">Progress</p>
-                            <p class="mt-2 text-lg font-semibold text-[#1e293b]">{{ $campaign['progress'] }}%</p>
+                        <div class="relative space-y-3">
+                            <p class="text-xs font-medium text-[#E8C89B]">{{ $campaign['organizer'] }}</p>
+                            <h1 class="font-display text-3xl font-semibold leading-[1.1] text-white sm:text-4xl">
+                                {{ $campaign['title'] }}
+                            </h1>
+                            <p class="max-w-xl text-sm leading-relaxed text-white/85">
+                                {{ $campaign['summary'] }}
+                            </p>
                         </div>
-                        <div class="rounded-2xl bg-[#f8fafc] px-4 py-3">
-                            <p class="text-[10px] uppercase tracking-[0.14em] text-pm-muted">Donatur</p>
-                            <p class="mt-2 text-lg font-semibold text-[#1e293b]">{{ $campaign['donor_count'] }}</p>
-                        </div>
-                        <div class="rounded-2xl bg-[#f8fafc] px-4 py-3">
-                            <p class="text-[10px] uppercase tracking-[0.14em] text-pm-muted">Sisa Waktu</p>
-                            <p class="mt-2 text-lg font-semibold text-[#1e293b]">{{ $campaign['days_left'] }}</p>
-                        </div>
-                    </div>
-
-                    <div class="mt-5 flex flex-wrap gap-3">
-                        @if ($campaign['status'] === 'active')
-                            <a href="{{ route('donation.create', ['slug' => $campaign['slug']]) }}" class="inline-flex rounded-full bg-pm-blue px-5 py-3 text-sm font-semibold text-white">Donasi Sekarang</a>
-                        @endif
-                        <a href="{{ route('donation.lookup') }}" class="inline-flex rounded-full border border-[#d9e2ef] bg-[#f8fafc] px-3.5 py-2.5 text-sm font-medium text-[#334155] sm:px-4 sm:py-3">
-                            Cek Status Donasi
-                        </a>
-                        @foreach ($campaign['share_links'] as $link)
-                            <a href="{{ $link['url'] }}" class="inline-flex rounded-full border border-[#d9e2ef] bg-[#f8fafc] px-3.5 py-2.5 text-sm font-medium text-[#334155] sm:px-4 sm:py-3">
-                                {{ $link['label'] }}
-                            </a>
-                        @endforeach
                     </div>
                 </div>
 
-                <div class="rounded-[24px] bg-white px-4 py-5 shadow-[0_16px_34px_rgba(15,23,42,0.08)] sm:rounded-[28px] sm:px-5 sm:py-6">
-                    <p class="text-[10px] font-semibold uppercase tracking-[0.18em] text-pm-blue">Informasi Khusus</p>
-                    <div class="mt-4 grid gap-3">
-                        @foreach ($campaign['meta'] as $label => $value)
-                            <div class="flex flex-col gap-1 rounded-2xl border border-[#e2e8f0] px-4 py-3 sm:flex-row sm:items-center sm:justify-between sm:gap-4">
-                                <span class="text-sm text-pm-muted">{{ $label }}</span>
-                                <span class="text-sm font-semibold text-[#1e293b]">{{ $value }}</span>
+                {{-- Donation Progress & Action Panel --}}
+                <div class="space-y-5">
+                    <div class="rounded-xl border border-line bg-surface p-6 tabular-nums">
+                        <div class="flex items-baseline justify-between gap-4">
+                            <div>
+                                <p class="text-xs text-muted">Dana terkumpul</p>
+                                <p class="mt-1 font-display text-3xl font-semibold text-brand">{{ $campaign['collected'] }}</p>
                             </div>
-                        @endforeach
+                            <div class="text-right">
+                                <p class="text-xs text-muted">Target</p>
+                                <p class="mt-1 text-sm font-semibold text-ink">{{ $campaign['target'] }}</p>
+                            </div>
+                        </div>
+
+                        <div class="mt-4 h-2 overflow-hidden rounded-full bg-surface-subtle">
+                            <div
+                                class="h-full rounded-full {{ $isUrgent ? 'bg-ochre' : 'bg-brand' }}"
+                                style="width: {{ min(100, max(0, $progressVal)) }}%"
+                            ></div>
+                        </div>
+
+                        <div class="mt-5 grid grid-cols-3 divide-x divide-line border-y border-line py-3.5 text-center">
+                            <div>
+                                <p class="text-[11px] text-muted">Capaian</p>
+                                <p class="mt-1 text-sm font-bold text-ink">{{ $progressVal }}%</p>
+                            </div>
+                            <div>
+                                <p class="text-[11px] text-muted">Donatur</p>
+                                <p class="mt-1 text-sm font-bold text-ink">{{ $campaign['donor_count'] }}</p>
+                            </div>
+                            <div>
+                                <p class="text-[11px] text-muted">Sisa waktu</p>
+                                <p class="mt-1 text-sm font-bold text-ink">{{ $campaign['days_left'] }}</p>
+                            </div>
+                        </div>
+
+                        <div class="mt-5 flex flex-col gap-2.5 sm:flex-row">
+                            @if ($campaign['status'] === 'active')
+                                <a
+                                    href="{{ route('donation.create', ['slug' => $campaign['slug']]) }}"
+                                    class="inline-flex flex-1 items-center justify-center rounded-lg bg-brand px-5 py-3 text-sm font-semibold text-white transition-colors hover:bg-brand-deep"
+                                >
+                                    Donasi sekarang
+                                </a>
+                            @endif
+                            <a
+                                href="{{ route('donation.lookup') }}"
+                                class="inline-flex items-center justify-center rounded-lg border border-line-strong bg-surface px-4 py-3 text-sm font-medium text-ink transition-colors hover:bg-surface-subtle"
+                            >
+                                Cek status
+                            </a>
+                        </div>
+
+                        @if (! empty($campaign['share_links']))
+                            <div class="mt-4 flex flex-wrap items-center gap-2 border-t border-line pt-4">
+                                <span class="text-xs text-muted">Bagikan:</span>
+                                @foreach ($campaign['share_links'] as $link)
+                                    <a
+                                        href="{{ $link['url'] }}"
+                                        class="rounded-md border border-line bg-canvas px-3 py-1.5 text-xs font-medium text-ink-soft transition-colors hover:border-line-strong hover:text-ink"
+                                    >
+                                        {{ $link['label'] }}
+                                    </a>
+                                @endforeach
+                            </div>
+                        @endif
                     </div>
+
+                    @if (! empty($campaign['meta']))
+                        <div class="rounded-xl border border-line bg-surface p-5">
+                            <h2 class="text-xs font-semibold text-ink">Informasi program</h2>
+                            <dl class="mt-3 divide-y divide-line text-xs">
+                                @foreach ($campaign['meta'] as $label => $value)
+                                    <div class="flex flex-col gap-1 py-2.5 sm:flex-row sm:items-center sm:justify-between">
+                                        <dt class="text-muted">{{ $label }}</dt>
+                                        <dd class="font-semibold text-ink">{{ $value }}</dd>
+                                    </div>
+                                @endforeach
+                            </dl>
+                        </div>
+                    @endif
                 </div>
             </div>
-        </section>
+        </div>
+    </section>
 
-        <section class="grid gap-5 lg:grid-cols-[1fr_0.34fr]">
-            <div class="rounded-[24px] bg-white shadow-[0_16px_34px_rgba(15,23,42,0.08)] sm:rounded-[28px]">
-                <div class="border-b border-[#e7edf5] px-4 py-4 sm:px-6 sm:py-5">
-                    <div class="flex flex-wrap gap-2" id="detail-tabs">
-                        <button type="button" class="rounded-full border border-pm-blue bg-pm-blue px-4 py-2 text-sm font-semibold text-white" data-tab-target="summary">Rangkuman</button>
-                        <button type="button" class="rounded-full border border-[#e2e8f0] bg-[#f8fafc] px-4 py-2 text-sm font-semibold text-pm-blue" data-tab-target="updates">Kabar Terbaru</button>
-                        <button type="button" class="rounded-full border border-[#e2e8f0] bg-[#f8fafc] px-4 py-2 text-sm font-semibold text-pm-blue" data-tab-target="donors">Donatur</button>
-                        <button type="button" class="rounded-full border border-[#e2e8f0] bg-[#f8fafc] px-4 py-2 text-sm font-semibold text-pm-blue" data-tab-target="prayers">Doa & Pesan</button>
-                    </div>
+    {{-- Detail Tabs & Sidebar --}}
+    <section class="bg-surface py-10 sm:py-12">
+        <div class="mx-auto grid w-full max-w-6xl gap-8 px-4 sm:px-6 lg:grid-cols-[1fr_320px] lg:px-8">
+            <div class="min-w-0">
+                <div class="flex flex-wrap gap-1.5 border-b border-line pb-4" id="detail-tabs">
+                    <button type="button" class="rounded-md bg-ink px-3.5 py-2 text-xs font-semibold text-white" data-tab-target="summary">Rangkuman</button>
+                    <button type="button" class="rounded-md border border-line bg-canvas px-3.5 py-2 text-xs font-medium text-muted hover:text-ink" data-tab-target="updates">Kabar terbaru</button>
+                    <button type="button" class="rounded-md border border-line bg-canvas px-3.5 py-2 text-xs font-medium text-muted hover:text-ink" data-tab-target="donors">Donatur</button>
+                    <button type="button" class="rounded-md border border-line bg-canvas px-3.5 py-2 text-xs font-medium text-muted hover:text-ink" data-tab-target="prayers">Doa &amp; pesan</button>
                 </div>
 
-                <div class="px-4 py-5 sm:px-6 sm:py-6">
-                    <div data-tab-panel="summary">
-                        <h2 class="font-display text-[2rem] leading-none text-[#1e293b] sm:text-3xl">Rangkuman Campaign</h2>
-                        <div class="mt-4 space-y-4 text-sm leading-7 text-[#334155]">
+                <div class="pt-6">
+                    <div data-tab-panel="summary" class="max-w-3xl">
+                        <h2 class="font-display text-2xl font-semibold text-ink">Rangkuman program</h2>
+                        <div class="mt-4 space-y-4 text-sm leading-7 text-ink-soft">
                             @forelse ($campaign['story'] as $paragraph)
                                 <p>{{ $paragraph }}</p>
                             @empty
-                                <p>Konten campaign belum diisi dari CMS.</p>
+                                <p class="text-muted">Konten campaign belum diisi.</p>
                             @endforelse
                         </div>
                     </div>
 
                     <div class="hidden space-y-4" data-tab-panel="updates">
                         @forelse ($campaign['updates'] as $update)
-                            <article class="rounded-[24px] border border-[#e2e8f0] bg-[#ffffff] px-4 py-4 sm:px-5 sm:py-5">
-                                <div class="flex flex-wrap items-center justify-between gap-3">
-                                    <h3 class="font-display text-[1.7rem] leading-none text-[#1e293b] sm:text-2xl">{{ $update['title'] }}</h3>
-                                    <span class="text-xs font-semibold uppercase tracking-[0.12em] text-pm-muted">{{ $update['date'] }}</span>
+                            <article class="rounded-xl border border-line bg-canvas p-5">
+                                <div class="flex flex-wrap items-baseline justify-between gap-2">
+                                    <h3 class="font-display text-xl font-semibold text-ink">{{ $update['title'] }}</h3>
+                                    <span class="text-xs text-muted">{{ $update['date'] }}</span>
                                 </div>
-                                <p class="mt-3 text-sm leading-7 text-[#334155]">{{ $update['body'] }}</p>
+                                <p class="mt-3 text-sm leading-7 text-ink-soft">{{ $update['body'] }}</p>
                             </article>
                         @empty
-                            <div class="rounded-[24px] border border-dashed border-[#e2e8f0] px-5 py-8 text-sm text-[#64748b]">
-                                Belum ada kabar terbaru untuk campaign ini.
+                            <div class="rounded-xl border border-dashed border-line-strong bg-canvas p-6 text-sm text-muted">
+                                Belum ada kabar terbaru untuk program ini.
                             </div>
                         @endforelse
                     </div>
 
-                    <div class="hidden space-y-4" data-tab-panel="donors">
+                    <div class="hidden divide-y divide-line rounded-xl border border-line bg-canvas" data-tab-panel="donors">
                         @forelse ($campaign['donors'] as $donor)
-                            <div class="rounded-[22px] border border-[#e2e8f0] bg-[#ffffff] px-4 py-4 sm:px-5">
-                                <div class="flex flex-col gap-2 sm:flex-row sm:items-center sm:justify-between sm:gap-3">
-                                    <div>
-                                        <p class="text-sm font-semibold text-[#1e293b]">{{ $donor['name'] }}</p>
-                                        <p class="mt-1 text-xs text-pm-muted">{{ $donor['date'] }}</p>
-                                    </div>
-                                    <p class="text-sm font-semibold text-pm-blue">{{ $donor['amount'] }}</p>
+                            <div class="flex flex-col gap-1 px-5 py-4 sm:flex-row sm:items-center sm:justify-between">
+                                <div>
+                                    <p class="text-sm font-semibold text-ink">{{ $donor['name'] }}</p>
+                                    <p class="text-xs text-muted">{{ $donor['date'] }}</p>
                                 </div>
+                                <p class="text-sm font-semibold text-brand tabular-nums">{{ $donor['amount'] }}</p>
                             </div>
                         @empty
-                            <div class="rounded-[24px] border border-dashed border-[#e2e8f0] px-5 py-8 text-sm text-[#64748b]">
-                                Belum ada donasi publik yang bisa ditampilkan.
+                            <div class="p-6 text-sm text-muted">
+                                Belum ada donasi publik yang dapat ditampilkan.
                             </div>
                         @endforelse
                     </div>
 
                     <div class="hidden space-y-4" data-tab-panel="prayers">
                         @forelse ($prayerMessages as $prayer)
-                            <div class="rounded-[22px] border border-[#e2e8f0] bg-[#ffffff] px-4 py-4 sm:px-5">
-                                <div class="flex flex-col gap-3">
-                                    <div class="flex items-center justify-between">
-                                        <p class="text-sm font-semibold text-[#1e293b]">{{ $prayer['name'] }}</p>
-                                        <p class="text-xs text-pm-muted">{{ $prayer['date'] }}</p>
-                                    </div>
-                                    <p class="text-sm leading-6 text-[#334155] italic">"{{ $prayer['message'] }}"</p>
-                                    <p class="text-xs font-semibold text-pm-blue">{{ $prayer['amount'] }}</p>
+                            <article class="rounded-xl border border-line bg-canvas p-5">
+                                <div class="flex items-center justify-between gap-2 text-xs">
+                                    <span class="font-semibold text-ink">{{ $prayer['name'] }}</span>
+                                    <span class="text-muted">{{ $prayer['date'] }}</span>
                                 </div>
-                            </div>
+                                <p class="mt-2.5 text-sm italic leading-relaxed text-ink-soft">"{{ $prayer['message'] }}"</p>
+                                <p class="mt-3 text-xs font-semibold text-brand tabular-nums">{{ $prayer['amount'] }}</p>
+                            </article>
                         @empty
-                            <div class="rounded-[24px] border border-dashed border-[#e2e8f0] px-5 py-8 text-sm text-[#64748b]">
+                            <div class="rounded-xl border border-dashed border-line-strong bg-canvas p-6 text-sm text-muted">
                                 Belum ada pesan atau doa dari donatur.
                             </div>
                         @endforelse
@@ -161,44 +199,43 @@
                 </div>
             </div>
 
-            <aside class="space-y-5">
-                <div class="rounded-[24px] bg-white px-4 py-5 shadow-[0_16px_34px_rgba(15,23,42,0.08)] sm:rounded-[28px] sm:px-5 sm:py-6">
-                    <p class="text-[10px] font-semibold uppercase tracking-[0.18em] text-pm-blue">Donasi Terbaru</p>
-                    <div class="mt-4 space-y-3">
+            <aside class="space-y-6">
+                <div class="rounded-xl border border-line bg-canvas p-5">
+                    <h3 class="text-sm font-semibold text-ink">Donasi terbaru</h3>
+                    <div class="mt-4 divide-y divide-line">
                         @forelse ($latestDonations as $donation)
-                            <div class="rounded-2xl border border-[#e2e8f0] bg-[#f9fbff] px-4 py-3">
-                                <p class="text-sm font-semibold text-[#15375f]">{{ $donation['name'] }}</p>
-                                <div class="mt-3 flex items-center justify-between text-xs text-pm-muted">
-                                    <span>{{ $donation['date'] }}</span>
-                                    <span class="font-semibold text-pm-blue">{{ $donation['amount'] }}</span>
+                            <div class="py-3 first:pt-0 last:pb-0">
+                                <div class="flex items-baseline justify-between gap-2">
+                                    <p class="text-xs font-semibold text-ink">{{ $donation['name'] }}</p>
+                                    <span class="text-xs font-semibold text-brand tabular-nums">{{ $donation['amount'] }}</span>
                                 </div>
+                                <p class="mt-1 text-[11px] text-muted">{{ $donation['date'] }}</p>
                             </div>
                         @empty
-                            <div class="rounded-[24px] border border-dashed border-[#e2e8f0] px-4 py-6 text-sm text-[#64748b]">
-                                Belum ada donasi terbaru.
-                            </div>
+                            <p class="py-3 text-xs text-muted">Belum ada donasi terbaru.</p>
                         @endforelse
                     </div>
                 </div>
 
-                <div class="rounded-[24px] bg-[linear-gradient(135deg,#1e293b,#059669)] px-4 py-5 text-white shadow-[0_16px_34px_rgba(15,23,42,0.12)] sm:rounded-[28px] sm:px-5 sm:py-6">
-                    <p class="text-[10px] uppercase tracking-[0.18em] text-emerald-100">Campaign Terkait</p>
-                    <div class="mt-4 space-y-3">
+                <div class="rounded-xl border border-line bg-brand-deep p-5 text-white">
+                    <h3 class="text-sm font-semibold">Program terkait</h3>
+                    <div class="mt-3.5 space-y-2.5">
                         @forelse ($relatedCampaigns as $related)
-                            <a href="{{ route('campaign.show', ['slug' => $related['slug']]) }}" class="block rounded-2xl border border-white/12 bg-white/10 px-4 py-4">
-                                <p class="text-sm font-semibold text-white">{{ $related['title'] }}</p>
-                                <p class="mt-1 text-xs text-emerald-100">{{ $related['days_left'] }}</p>
+                            <a
+                                href="{{ route('campaign.show', ['slug' => $related['slug']]) }}"
+                                class="block rounded-lg border border-white/12 bg-white/5 p-3.5 transition-colors hover:bg-white/10"
+                            >
+                                <p class="text-xs font-semibold text-white">{{ $related['title'] }}</p>
+                                <p class="mt-1 text-[11px] text-white/70">{{ $related['days_left'] }}</p>
                             </a>
                         @empty
-                            <div class="rounded-2xl border border-white/12 bg-white/10 px-4 py-4 text-sm text-emerald-50/90">
-                                Belum ada campaign terkait dalam kategori yang sama.
-                            </div>
+                            <p class="text-xs text-white/75">Belum ada program terkait dalam kategori yang sama.</p>
                         @endforelse
                     </div>
                 </div>
             </aside>
-        </section>
-    </div>
+        </div>
+    </section>
 @endsection
 
 @push('scripts')
@@ -212,12 +249,14 @@
                     const target = button.dataset.tabTarget;
 
                     buttons.forEach((item) => {
-                        item.classList.toggle('border-pm-blue', item === button);
-                        item.classList.toggle('bg-pm-blue', item === button);
-                        item.classList.toggle('text-white', item === button);
-                        item.classList.toggle('text-pm-blue', item !== button);
-                        item.classList.toggle('border-[#e2e8f0]', item !== button);
-                        item.classList.toggle('bg-[#f8fafc]', item !== button);
+                        const isActive = item === button;
+                        item.classList.toggle('bg-ink', isActive);
+                        item.classList.toggle('text-white', isActive);
+                        item.classList.toggle('font-semibold', isActive);
+                        item.classList.toggle('border', !isActive);
+                        item.classList.toggle('border-line', !isActive);
+                        item.classList.toggle('bg-canvas', !isActive);
+                        item.classList.toggle('text-muted', !isActive);
                     });
 
                     panels.forEach((panel) => {

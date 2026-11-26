@@ -1,34 +1,40 @@
-<header class="sticky top-0 z-30 border-b border-[#dbe5f0] bg-white/90 px-4 py-4 backdrop-blur sm:px-6 lg:px-8">
-    <div class="flex flex-col gap-3 sm:flex-row sm:items-center sm:justify-between">
-        <div>
+<header class="sticky top-0 z-30 border-b border-line bg-surface/95 px-4 py-3.5 backdrop-blur-sm sm:px-6 lg:px-8">
+    <div class="flex flex-wrap items-center justify-between gap-3">
+        <div class="flex items-center gap-3 min-w-0">
             <button
                 type="button"
-                class="mb-3 inline-flex items-center gap-2 rounded-full border border-[#e2e8f0] bg-white px-3 py-2 text-sm font-medium text-[#334155] shadow-[0_8px_18px_rgba(15,23,42,0.06)] lg:hidden"
+                class="inline-flex h-9 w-9 items-center justify-center rounded-lg border border-line bg-canvas text-ink lg:hidden"
                 data-admin-sidebar-open
+                aria-label="Buka menu"
             >
                 <svg class="h-4 w-4" viewBox="0 0 20 20" fill="none" stroke="currentColor" stroke-width="1.8" aria-hidden="true">
                     <path d="M3 5h14M3 10h14M3 15h14"></path>
                 </svg>
-                Menu
             </button>
-            <p class="text-[10px] font-semibold uppercase tracking-[0.18em] text-pm-blue">CMS Admin</p>
-            <h1 class="mt-1 font-display text-[2rem] leading-none text-[#1e293b]">{{ $page['title'] }}</h1>
+
+            <div class="min-w-0">
+                <h1 class="truncate font-display text-2xl font-semibold leading-none text-ink">{{ $page['title'] }}</h1>
+                @if (! empty($page['description']))
+                    <p class="mt-1 hidden truncate text-xs text-muted sm:block">{{ $page['description'] }}</p>
+                @endif
+            </div>
         </div>
 
-        <div class="flex flex-wrap items-center gap-3">
-            <div class="rounded-full border border-[#e2e8f0] bg-[#f8fafc] px-4 py-2 text-sm text-[#33506f]">
-                {{ $page['description'] ?? 'Halaman administrasi' }}
-            </div>
-            <div class="flex items-center gap-3 rounded-full bg-[#1e293b] px-3 py-2 text-white">
-                <span class="inline-flex h-8 w-8 items-center justify-center rounded-full bg-white/15 text-sm font-semibold">
+        <div class="flex items-center gap-2.5">
+            <div class="hidden items-center gap-2 rounded-lg border border-line bg-canvas px-3 py-1.5 sm:flex">
+                <span class="inline-flex h-6 w-6 items-center justify-center rounded-md bg-brand text-xs font-semibold text-white">
                     {{ strtoupper(substr(auth()->user()?->name ?? 'A', 0, 1)) }}
                 </span>
-                <span class="text-sm font-medium">{{ auth()->user()?->name ?? 'Admin' }}</span>
+                <span class="text-xs font-medium text-ink">{{ auth()->user()?->name ?? 'Admin' }}</span>
             </div>
+
             <form method="POST" action="{{ route('admin.logout') }}">
                 @csrf
-                <button type="submit" class="rounded-full border border-[#e2e8f0] bg-white px-4 py-2 text-sm font-medium text-[#334155]">
-                    Logout
+                <button
+                    type="submit"
+                    class="rounded-lg border border-line-strong bg-surface px-3.5 py-1.5 text-xs font-medium text-ink-soft transition-colors hover:bg-surface-subtle hover:text-ink"
+                >
+                    Keluar
                 </button>
             </form>
         </div>

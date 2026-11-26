@@ -1,122 +1,177 @@
 @extends('layouts.public')
 
 @section('content')
-    <div class="mx-auto w-[min(1120px,calc(100%-1rem))] space-y-5">
-        <section class="rounded-[24px] bg-[linear-gradient(135deg,#1e293b,#059669)] px-5 py-6 text-white shadow-[0_18px_40px_rgba(15,23,42,0.16)] sm:rounded-[30px] sm:px-8 sm:py-8">
-            <p class="text-[11px] uppercase tracking-[0.28em] text-emerald-100">Checkout Donasi</p>
-            <h1 class="mt-3 font-display text-[2.45rem] leading-none sm:text-[3.2rem]">Dukung {{ $campaign->title }}</h1>
-            <p class="mt-4 max-w-3xl text-sm leading-7 text-emerald-50/90">
-                Setelah form dikirim, sistem akan membuat nomor referensi dan nominal transfer unik agar admin lebih mudah mencocokkan dana masuk di mutasi rekening.
+    <section class="border-b border-line bg-canvas py-8 sm:py-10">
+        <div class="mx-auto w-full max-w-5xl px-4 sm:px-6 lg:px-8">
+            <p class="text-xs font-medium text-brand">Checkout donasi</p>
+            <h1 class="mt-2 font-display text-3xl font-semibold leading-tight text-ink sm:text-4xl">
+                Dukung {{ $campaign->title }}
+            </h1>
+            <p class="mt-2 max-w-2xl text-sm leading-6 text-muted">
+                Setelah formulir dikirim, sistem akan membuat nomor referensi dan nominal transfer unik untuk mempermudah verifikasi mutasi rekening.
             </p>
-        </section>
+        </div>
+    </section>
 
-        <section class="grid gap-5 lg:grid-cols-[0.9fr_1.1fr]">
-            <aside class="rounded-[24px] bg-white px-4 py-5 shadow-[0_16px_34px_rgba(15,23,42,0.08)] sm:rounded-[28px] sm:px-5 sm:py-6">
-                <p class="text-[10px] font-semibold uppercase tracking-[0.18em] text-pm-blue">Ringkasan Campaign</p>
-                <h2 class="mt-2 font-display text-[2rem] leading-none text-[#1e293b]">{{ $campaign->title }}</h2>
-                <p class="mt-4 text-sm leading-7 text-[#334155]">{{ $campaign->summary }}</p>
+    <section class="bg-surface py-8 sm:py-12">
+        <div class="mx-auto grid w-full max-w-5xl gap-8 px-4 sm:px-6 lg:grid-cols-[0.82fr_1.18fr] lg:items-start lg:px-8">
+            <aside class="rounded-xl border border-line bg-canvas p-5 sm:p-6">
+                <p class="text-xs font-medium text-brand">Ringkasan program</p>
+                <h2 class="mt-1.5 font-display text-xl font-semibold text-ink">{{ $campaign->title }}</h2>
+                <p class="mt-2.5 text-xs leading-6 text-muted">{{ $campaign->summary }}</p>
 
-                <div class="mt-5 grid gap-3">
-                    <div class="rounded-2xl border border-[#e2e8f0] px-4 py-3">
-                        <p class="text-[10px] uppercase tracking-[0.14em] text-pm-muted">Terkumpul</p>
-                        <p class="mt-2 text-lg font-semibold text-[#1e293b]">Rp {{ number_format((float) $campaign->current_amount, 0, ',', '.') }}</p>
+                <dl class="mt-5 divide-y divide-line border-t border-line text-xs tabular-nums">
+                    <div class="flex items-center justify-between py-3">
+                        <dt class="text-muted">Terkumpul</dt>
+                        <dd class="font-semibold text-brand">Rp {{ number_format((float) $campaign->current_amount, 0, ',', '.') }}</dd>
                     </div>
-                    <div class="rounded-2xl border border-[#e2e8f0] px-4 py-3">
-                        <p class="text-[10px] uppercase tracking-[0.14em] text-pm-muted">Target</p>
-                        <p class="mt-2 text-lg font-semibold text-[#1e293b]">Rp {{ number_format((float) $campaign->target_amount, 0, ',', '.') }}</p>
+                    <div class="flex items-center justify-between py-3">
+                        <dt class="text-muted">Target</dt>
+                        <dd class="font-semibold text-ink">Rp {{ number_format((float) $campaign->target_amount, 0, ',', '.') }}</dd>
                     </div>
-                    <div class="rounded-2xl border border-[#e2e8f0] px-4 py-3">
-                        <p class="text-[10px] uppercase tracking-[0.14em] text-pm-muted">Pengelola</p>
-                        <p class="mt-2 text-lg font-semibold text-[#1e293b]">{{ $campaign->organizer_name }}</p>
+                    <div class="flex items-center justify-between py-3">
+                        <dt class="text-muted">Pengelola</dt>
+                        <dd class="font-semibold text-ink">{{ $campaign->organizer_name }}</dd>
                     </div>
+                </dl>
+
+                <div class="mt-4 rounded-lg border border-line bg-surface p-3.5 text-xs leading-6 text-muted">
+                    <p class="font-semibold text-ink">Sudah pernah berdonasi?</p>
+                    <p class="mt-1">Cek status verifikasi kapan saja memakai nomor referensi.</p>
+                    <a href="{{ route('donation.lookup') }}" class="mt-2.5 inline-flex font-semibold text-brand hover:underline">
+                        Buka halaman cek status
+                    </a>
                 </div>
             </aside>
 
-            <form method="POST" action="{{ route('donation.store', $campaign->slug) }}" data-dirty-form class="rounded-[24px] bg-white px-4 py-5 shadow-[0_16px_34px_rgba(15,23,42,0.08)] sm:rounded-[28px] sm:px-5 sm:py-6">
+            <form method="POST" action="{{ route('donation.store', $campaign->slug) }}" data-dirty-form class="rounded-xl border border-line bg-surface p-5 sm:p-7">
                 @csrf
 
-                <div class="mb-5 rounded-2xl border border-[#e2e8f0] bg-[#f8fafc] px-4 py-4 text-sm leading-7 text-[#334155]">
-                    <p class="font-semibold text-[#1e293b]">Alur transfer rekening</p>
-                    <p class="mt-2">Isi data donasi, transfer sesuai total unik yang muncul, lalu kirim konfirmasi sederhana ke WhatsApp admin dari halaman status.</p>
-                    <a href="{{ route('donation.lookup') }}" class="mt-3 inline-flex rounded-full bg-pm-blue px-4 py-2 text-xs font-semibold text-white">
-                        Cek Status Donasi
-                    </a>
-                </div>
-
-                <div class="grid gap-5 lg:grid-cols-2">
-                    <div class="lg:col-span-2">
-                        <div class="flex items-center justify-between mb-2">
-                            <span class="block text-sm font-medium text-[#334155]">Nominal Donasi</span>
-                            <span class="text-xs text-pm-muted">Min. Rp 1.000</span>
+                <div class="grid gap-5 sm:grid-cols-2">
+                    <div class="sm:col-span-2">
+                        <div class="mb-2 flex items-center justify-between">
+                            <label for="donation-amount" class="text-xs font-semibold text-ink">Nominal donasi</label>
+                            <span class="text-xs text-muted">Min. Rp 1.000</span>
                         </div>
                         <div class="relative">
-                            <span class="absolute left-4 top-1/2 -translate-y-1/2 text-sm font-semibold text-[#64748b]">Rp</span>
-                            <input type="text" name="amount" inputmode="numeric" value="{{ old('amount') }}" data-money-input class="w-full rounded-2xl border border-[#e2e8f0] pl-12 pr-4 py-3 text-base font-semibold outline-none focus:border-pm-blue focus:ring-2 focus:ring-pm-blue/15" placeholder="100.000" required>
+                            <span class="absolute left-3.5 top-1/2 -translate-y-1/2 text-sm font-semibold text-muted">Rp</span>
+                            <input
+                                id="donation-amount"
+                                type="text"
+                                name="amount"
+                                inputmode="numeric"
+                                value="{{ old('amount') }}"
+                                data-money-input
+                                class="w-full rounded-lg border border-line-strong bg-canvas py-2.5 pl-11 pr-4 text-base font-semibold text-ink tabular-nums outline-none transition-colors focus:border-brand focus:bg-surface"
+                                placeholder="100.000"
+                                required
+                            >
                         </div>
-                        <div class="mt-2.5 flex flex-wrap gap-2">
+                        <div class="mt-2.5 flex flex-wrap gap-1.5">
                             @foreach([25000, 50000, 100000, 250000, 500000] as $preset)
-                                <button type="button" data-preset-amount="{{ $preset }}" class="rounded-xl border border-[#e2e8f0] bg-[#f8fafc] px-3 py-1.5 text-xs font-semibold text-[#334155] transition hover:border-pm-blue hover:bg-emerald-50 hover:text-pm-blue">
+                                <button
+                                    type="button"
+                                    data-preset-amount="{{ $preset }}"
+                                    class="rounded-md border border-line bg-canvas px-3 py-1.5 text-xs font-medium text-ink-soft tabular-nums transition-colors hover:border-brand hover:bg-brand-soft hover:text-brand"
+                                >
                                     Rp {{ number_format($preset, 0, ',', '.') }}
                                 </button>
                             @endforeach
                         </div>
-                        @error('amount') <span class="mt-2 block text-xs text-[#b42318] font-medium">{{ $message }}</span> @enderror
+                        @error('amount') <span class="mt-1.5 block text-xs font-medium text-danger">{{ $message }}</span> @enderror
                     </div>
 
                     <label class="block">
-                        <span class="mb-2 block text-sm font-medium text-[#334155]">Nama Lengkap</span>
-                        <input type="text" name="donor_name" value="{{ old('donor_name') }}" class="w-full rounded-2xl border border-[#e2e8f0] px-4 py-3 text-sm outline-none focus:border-pm-blue focus:ring-2 focus:ring-pm-blue/15" placeholder="Nama Anda" required>
-                        @error('donor_name') <span class="mt-2 block text-xs text-[#b42318] font-medium">{{ $message }}</span> @enderror
+                        <span class="mb-1.5 block text-xs font-semibold text-ink">Nama lengkap</span>
+                        <input
+                            type="text"
+                            name="donor_name"
+                            value="{{ old('donor_name') }}"
+                            class="w-full rounded-lg border border-line-strong bg-canvas px-3.5 py-2.5 text-sm text-ink outline-none transition-colors focus:border-brand focus:bg-surface"
+                            placeholder="Nama Anda"
+                            required
+                        >
+                        @error('donor_name') <span class="mt-1.5 block text-xs font-medium text-danger">{{ $message }}</span> @enderror
                     </label>
 
                     <label class="block">
-                        <span class="mb-2 block text-sm font-medium text-[#334155]">Nomor WhatsApp / HP</span>
-                        <input type="tel" name="donor_phone" inputmode="tel" value="{{ old('donor_phone') }}" class="w-full rounded-2xl border border-[#e2e8f0] px-4 py-3 text-sm outline-none focus:border-pm-blue focus:ring-2 focus:ring-pm-blue/15" placeholder="Contoh: 081234567890" required>
-                        @error('donor_phone') <span class="mt-2 block text-xs text-[#b42318] font-medium">{{ $message }}</span> @enderror
+                        <span class="mb-1.5 block text-xs font-semibold text-ink">Nomor WhatsApp / HP</span>
+                        <input
+                            type="tel"
+                            name="donor_phone"
+                            inputmode="tel"
+                            value="{{ old('donor_phone') }}"
+                            class="w-full rounded-lg border border-line-strong bg-canvas px-3.5 py-2.5 text-sm text-ink outline-none transition-colors focus:border-brand focus:bg-surface"
+                            placeholder="081234567890"
+                            required
+                        >
+                        @error('donor_phone') <span class="mt-1.5 block text-xs font-medium text-danger">{{ $message }}</span> @enderror
                     </label>
 
-                    <label class="block lg:col-span-2">
-                        <span class="mb-2 block text-sm font-medium text-[#334155]">Email <span class="text-xs text-pm-muted font-normal">(Opsional)</span></span>
-                        <input type="email" name="donor_email" value="{{ old('donor_email') }}" class="w-full rounded-2xl border border-[#e2e8f0] px-4 py-3 text-sm outline-none focus:border-pm-blue focus:ring-2 focus:ring-pm-blue/15" placeholder="email@contoh.com">
-                        @error('donor_email') <span class="mt-2 block text-xs text-[#b42318] font-medium">{{ $message }}</span> @enderror
+                    <label class="block sm:col-span-2">
+                        <span class="mb-1.5 block text-xs font-semibold text-ink">Email <span class="font-normal text-muted">(opsional)</span></span>
+                        <input
+                            type="email"
+                            name="donor_email"
+                            value="{{ old('donor_email') }}"
+                            class="w-full rounded-lg border border-line-strong bg-canvas px-3.5 py-2.5 text-sm text-ink outline-none transition-colors focus:border-brand focus:bg-surface"
+                            placeholder="email@contoh.com"
+                        >
+                        @error('donor_email') <span class="mt-1.5 block text-xs font-medium text-danger">{{ $message }}</span> @enderror
                     </label>
 
-                    <label class="block lg:col-span-2">
-                        <div class="flex items-center justify-between mb-2">
-                            <span class="block text-sm font-medium text-[#334155]">Doa / Pesan Kebaikan <span class="text-xs text-pm-muted font-normal">(Opsional)</span></span>
-                            <span class="text-xs text-pm-muted" id="prayer-counter">Maks. 1.000 karakter</span>
+                    <label class="block sm:col-span-2">
+                        <div class="mb-1.5 flex items-center justify-between">
+                            <span class="text-xs font-semibold text-ink">Doa atau pesan kebaikan <span class="font-normal text-muted">(opsional)</span></span>
+                            <span class="text-xs text-muted" id="prayer-counter">Maks. 1.000 karakter</span>
                         </div>
-                        <textarea name="prayer_message" rows="4" maxlength="1000" class="w-full rounded-2xl border border-[#e2e8f0] px-4 py-3 text-sm outline-none focus:border-pm-blue focus:ring-2 focus:ring-pm-blue/15" placeholder="Tuliskan doa atau pesan kebaikan untuk campaign ini...">{{ old('prayer_message') }}</textarea>
-                        @error('prayer_message') <span class="mt-2 block text-xs text-[#b42318] font-medium">{{ $message }}</span> @enderror
+                        <textarea
+                            name="prayer_message"
+                            rows="3"
+                            maxlength="1000"
+                            class="w-full rounded-lg border border-line-strong bg-canvas px-3.5 py-2.5 text-sm text-ink outline-none transition-colors focus:border-brand focus:bg-surface"
+                            placeholder="Tuliskan doa atau pesan untuk penerima manfaat..."
+                        >{{ old('prayer_message') }}</textarea>
+                        @error('prayer_message') <span class="mt-1.5 block text-xs font-medium text-danger">{{ $message }}</span> @enderror
                     </label>
 
-                    <label class="flex items-center gap-3 rounded-2xl border border-[#e2e8f0] px-4 py-3 text-sm font-medium text-[#334155] lg:col-span-2">
+                    <label class="flex cursor-pointer items-center gap-3 rounded-lg border border-line bg-canvas px-4 py-3 text-xs font-medium text-ink sm:col-span-2">
                         <input type="hidden" name="is_anonymous" value="0">
-                        <input type="checkbox" name="is_anonymous" value="1" @checked(old('is_anonymous')) class="h-4 w-4 rounded border-[#b8c8d8] text-pm-blue focus:ring-pm-blue">
-                        Tampilkan sebagai anonim di halaman publik
+                        <input type="checkbox" name="is_anonymous" value="1" @checked(old('is_anonymous')) class="h-4 w-4 rounded border-line-strong text-brand focus:ring-brand">
+                        Tampilkan sebagai anonim di daftar donatur publik
                     </label>
 
-                    <div class="lg:col-span-2">
-                        <span class="mb-3 block text-sm font-medium text-[#334155]">Metode Pembayaran</span>
+                    <div class="sm:col-span-2">
+                        <span class="mb-2 block text-xs font-semibold text-ink">Metode pembayaran</span>
                         <div class="grid gap-3 sm:grid-cols-2">
-                            <label class="flex cursor-pointer items-center gap-3 rounded-2xl border border-[#e2e8f0] px-4 py-4 text-sm font-medium text-[#334155] has-[:checked]:border-pm-blue has-[:checked]:bg-[#f8fafc] has-[:checked]:text-pm-blue">
-                                <input type="radio" name="payment_gateway" value="manual" class="h-4 w-4 border-[#b8c8d8] text-pm-blue focus:ring-pm-blue" @checked(old('payment_gateway', 'manual') === 'manual') required>
-                                <span>Transfer Manual<br><span class="text-xs text-pm-muted font-normal">Transfer bank dengan kode unik</span></span>
+                            <label class="flex cursor-pointer items-start gap-3 rounded-lg border border-line-strong bg-canvas p-3.5 text-xs transition-colors has-[:checked]:border-brand has-[:checked]:bg-brand-soft/40">
+                                <input type="radio" name="payment_gateway" value="manual" class="mt-0.5 h-4 w-4 border-line-strong text-brand focus:ring-brand" @checked(old('payment_gateway', 'manual') === 'manual') required>
+                                <span>
+                                    <span class="block font-semibold text-ink">Transfer manual</span>
+                                    <span class="mt-0.5 block text-muted">Transfer bank dengan kode unik verifikasi</span>
+                                </span>
                             </label>
-                            <label class="flex cursor-not-allowed items-center gap-3 rounded-2xl border border-[#e2e8f0] px-4 py-4 text-sm font-medium opacity-50 select-none" title="Fitur ini belum tersedia">
-                                <input type="radio" name="payment_gateway" value="midtrans" class="h-4 w-4 border-[#b8c8d8] text-pm-blue focus:ring-pm-blue pointer-events-none" disabled>
-                                <span class="text-gray-500">Bayar Otomatis<br><span class="text-xs font-normal">Coming Soon</span></span>
+                            <label class="flex cursor-not-allowed items-start gap-3 rounded-lg border border-line bg-surface-subtle p-3.5 text-xs opacity-60 select-none" title="Fitur ini belum tersedia">
+                                <input type="radio" name="payment_gateway" value="midtrans" class="pointer-events-none mt-0.5 h-4 w-4" disabled>
+                                <span>
+                                    <span class="block font-semibold text-muted">Bayar otomatis</span>
+                                    <span class="mt-0.5 block text-muted">Segera hadir</span>
+                                </span>
                             </label>
                         </div>
-                        @error('payment_gateway') <span class="mt-2 block text-xs text-[#b42318]">{{ $message }}</span> @enderror
+                        @error('payment_gateway') <span class="mt-1.5 block text-xs text-danger">{{ $message }}</span> @enderror
                     </div>
                 </div>
 
-                <div class="mt-6 flex flex-wrap justify-end gap-3">
-                    <a href="{{ route('campaign.show', $campaign->slug) }}" class="rounded-full border border-[#e2e8f0] px-5 py-3 text-sm font-medium text-[#334155]">Kembali</a>
-                    <button type="submit" class="rounded-full bg-pm-blue px-5 py-3 text-sm font-semibold text-white">Lanjut ke Instruksi Transfer</button>
+                <div class="mt-6 flex flex-wrap items-center justify-end gap-3 border-t border-line pt-5">
+                    <a href="{{ route('campaign.show', $campaign->slug) }}" class="rounded-lg border border-line-strong px-4 py-2.5 text-xs font-medium text-ink hover:bg-surface-subtle">
+                        Kembali
+                    </a>
+                    <button type="submit" class="rounded-lg bg-brand px-5 py-2.5 text-xs font-semibold text-white transition-colors hover:bg-brand-deep">
+                        Lanjut ke instruksi transfer
+                    </button>
                 </div>
             </form>
-        </section>
-    </div>
+        </div>
+    </section>
 @endsection

@@ -1,51 +1,48 @@
 @extends('layouts.admin')
 
 @section('content')
-    <div class="space-y-6">
-        <section class="rounded-[26px] bg-white shadow-[0_14px_28px_rgba(15,23,42,0.08)]">
-            <div class="flex flex-col gap-4 border-b border-[#e2e8f0] px-5 py-5 lg:flex-row lg:items-center lg:justify-between">
-                <div>
-                    <p class="text-[10px] font-semibold uppercase tracking-[0.18em] text-pm-blue">Modul Administrasi</p>
-                    <h2 class="mt-1 font-display text-3xl leading-none text-[#1e293b]">{{ $page['title'] }}</h2>
-                    <p class="mt-3 max-w-3xl text-sm leading-7 text-[#64748b]">{{ $page['description'] }}</p>
-                </div>
-
-                <div class="flex flex-wrap gap-2">
-                    @foreach ($page['actions'] as $action)
-                        <button type="button" class="rounded-full border border-[#d9e4ef] bg-[#f8fafc] px-4 py-2 text-sm font-medium text-[#334155]">
-                            {{ $action }}
-                        </button>
-                    @endforeach
-                </div>
+    <section class="overflow-hidden rounded-xl border border-line bg-surface">
+        <div class="flex flex-col gap-4 border-b border-line px-5 py-5 lg:flex-row lg:items-center lg:justify-between">
+            <div>
+                <h2 class="font-display text-2xl font-semibold leading-none text-ink">{{ $page['title'] }}</h2>
+                <p class="mt-1.5 max-w-2xl text-xs leading-6 text-muted sm:text-sm">{{ $page['description'] }}</p>
             </div>
 
-            <div class="overflow-x-auto px-5 py-5">
-                <table class="min-w-full text-left text-sm">
-                    <thead class="text-[#64748b]">
-                        <tr class="border-b border-[#e9eff6]">
-                            @foreach ($page['columns'] as $column)
-                                <th class="pb-3 font-semibold">{{ $column }}</th>
-                            @endforeach
-                            <th class="pb-3 font-semibold text-right">Aksi</th>
-                        </tr>
-                    </thead>
-                    <tbody>
-                        @foreach ($page['rows'] as $row)
-                            <tr class="border-b border-[#f1f5f9] last:border-b-0">
-                                @foreach ($row as $cell)
-                                    <td class="py-3 text-[#1e293b]">{{ $cell }}</td>
-                                @endforeach
-                                <td class="py-3 text-right">
-                                    <div class="inline-flex gap-2">
-                                        <button type="button" class="rounded-full border border-[#e2e8f0] px-3 py-1.5 text-xs font-medium text-[#334155]">Edit</button>
-                                        <button type="button" class="rounded-full bg-pm-blue px-3 py-1.5 text-xs font-medium text-white">Lihat</button>
-                                    </div>
-                                </td>
-                            </tr>
+            <div class="flex flex-wrap gap-2">
+                @foreach ($page['actions'] as $action)
+                    <button type="button" class="rounded-lg border border-line-strong bg-canvas px-3.5 py-2 text-xs font-medium text-ink hover:bg-surface-subtle">
+                        {{ $action }}
+                    </button>
+                @endforeach
+            </div>
+        </div>
+
+        <div class="overflow-x-auto">
+            <table class="min-w-full text-left text-xs sm:text-sm">
+                <thead>
+                    <tr class="border-b border-line bg-canvas text-xs text-muted">
+                        @foreach ($page['columns'] as $column)
+                            <th class="px-5 py-3 font-medium">{{ $column }}</th>
                         @endforeach
-                    </tbody>
-                </table>
-            </div>
-        </section>
-    </div>
+                        <th class="px-5 py-3 text-right font-medium">Aksi</th>
+                    </tr>
+                </thead>
+                <tbody class="divide-y divide-line">
+                    @foreach ($page['rows'] as $row)
+                        <tr class="hover:bg-canvas/60">
+                            @foreach ($row as $cell)
+                                <td class="px-5 py-3.5 text-ink">{{ $cell }}</td>
+                            @endforeach
+                            <td class="px-5 py-3.5 text-right">
+                                <div class="inline-flex gap-1.5">
+                                    <button type="button" class="rounded-md border border-line-strong px-2.5 py-1 text-xs font-medium text-ink-soft hover:bg-surface-subtle">Edit</button>
+                                    <button type="button" class="rounded-md bg-brand px-2.5 py-1 text-xs font-medium text-white hover:bg-brand-deep">Lihat</button>
+                                </div>
+                            </td>
+                        </tr>
+                    @endforeach
+                </tbody>
+            </table>
+        </div>
+    </section>
 @endsection

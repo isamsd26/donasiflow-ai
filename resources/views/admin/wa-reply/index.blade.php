@@ -1,34 +1,34 @@
 @extends('layouts.admin')
 
 @section('content')
-    <section class="rounded-[26px] bg-white shadow-[0_14px_28px_rgba(15,23,42,0.08)] flex flex-col h-full min-h-[70vh]">
-        <div class="flex flex-col sm:flex-row sm:items-center justify-between gap-4 border-b border-[#e2e8f0] px-5 py-5 shrink-0">
+    <section class="rounded-xl border border-line bg-surface flex flex-col h-full min-h-[70vh]">
+        <div class="flex flex-col sm:flex-row sm:items-center justify-between gap-4 border-b border-line px-5 py-5 shrink-0">
             <div>
-                <p class="text-[10px] font-semibold uppercase tracking-[0.18em] text-pm-blue">Modul Komunikasi</p>
-                <h2 class="mt-1 font-display text-3xl leading-none text-[#1e293b]">{{ $page['title'] }}</h2>
-                <p class="mt-3 max-w-3xl text-sm leading-7 text-[#64748b]">{{ $page['description'] }}</p>
+                <p class="text-[10px] font-semibold uppercase tracking-[0.18em] text-brand">Modul Komunikasi</p>
+                <h2 class="mt-1 font-display text-3xl leading-none text-ink">{{ $page['title'] }}</h2>
+                <p class="mt-3 max-w-3xl text-sm leading-7 text-muted">{{ $page['description'] }}</p>
             </div>
             <div>
-                <a href="{{ route('admin.wa-templates.index') }}" class="rounded-full border border-[#e2e8f0] bg-[#f8fafc] px-4 py-2 text-sm font-semibold text-pm-blue hover:bg-[#e2e8f0]">Kelola Template</a>
+                <a href="{{ route('admin.wa-templates.index') }}" class="rounded-full border border-line bg-canvas px-4 py-2 text-sm font-semibold text-brand hover:bg-[#e2e8f0]">Kelola Template</a>
             </div>
         </div>
 
         <div class="flex flex-col lg:flex-row flex-1 lg:overflow-hidden">
             <!-- Panel Kiri: Donasi Paid -->
-            <div class="w-full lg:w-1/2 flex flex-col border-b lg:border-b-0 lg:border-r border-[#e2e8f0] bg-white">
-                <div class="p-5 border-b border-[#e2e8f0] bg-[#f8fafc] shrink-0">
+            <div class="w-full lg:w-1/2 flex flex-col border-b lg:border-b-0 lg:border-r border-line bg-white">
+                <div class="p-5 border-b border-line bg-canvas shrink-0">
                     <form method="GET" action="{{ route('admin.wa-reply.index') }}" class="flex gap-2">
-                        <input type="text" name="q" value="{{ request('q') }}" placeholder="Cari nama, hp, referensi, campaign..." class="flex-1 rounded-full border border-[#e2e8f0] px-4 py-2 text-sm outline-none focus:border-pm-blue">
-                        <button type="submit" class="rounded-full bg-pm-blue px-4 py-2 text-sm font-semibold text-white">Cari</button>
+                        <input type="text" name="q" value="{{ request('q') }}" placeholder="Cari nama, hp, referensi, campaign..." class="flex-1 rounded-full border border-line px-4 py-2 text-sm outline-none focus:border-brand">
+                        <button type="submit" class="rounded-full bg-brand px-4 py-2 text-sm font-semibold text-white">Cari</button>
                         @if(request('q'))
-                            <a href="{{ route('admin.wa-reply.index') }}" class="rounded-full border border-[#e2e8f0] bg-white px-4 py-2 text-sm font-semibold text-[#64748b]">Reset</a>
+                            <a href="{{ route('admin.wa-reply.index') }}" class="rounded-full border border-line bg-white px-4 py-2 text-sm font-semibold text-muted">Reset</a>
                         @endif
                     </form>
                 </div>
                 
                 <div class="flex-1 lg:overflow-y-auto p-5 space-y-3 lg:max-h-[600px]">
                     @forelse($donations as $donation)
-                        <div class="rounded-2xl border border-[#e2e8f0] p-4 hover:border-pm-blue hover:shadow-sm transition cursor-pointer flex justify-between items-center donation-item" 
+                        <div class="rounded-lg border border-line p-4 hover:border-brand hover:shadow-sm transition cursor-pointer flex justify-between items-center donation-item" 
                              data-donation="{{ json_encode([
                                  'nama' => $donation->donor_name,
                                  'campaign' => $donation->campaign?->title ?? '-',
@@ -36,17 +36,17 @@
                                  'phone' => preg_replace('/[^\d]/', '', $donation->donor_phone)
                              ]) }}">
                             <div>
-                                <p class="text-sm font-semibold text-[#1e293b]">{{ $donation->donor_name }}</p>
-                                <p class="text-xs text-[#64748b] mt-1">{{ $donation->donor_phone ?: 'Tidak ada nomor HP' }}</p>
-                                <p class="text-xs text-pm-muted mt-1 truncate max-w-[200px]">{{ $donation->campaign?->title ?? '-' }}</p>
+                                <p class="text-sm font-semibold text-ink">{{ $donation->donor_name }}</p>
+                                <p class="text-xs text-muted mt-1">{{ $donation->donor_phone ?: 'Tidak ada nomor HP' }}</p>
+                                <p class="text-xs text-muted mt-1 truncate max-w-[200px]">{{ $donation->campaign?->title ?? '-' }}</p>
                             </div>
                             <div class="text-right">
-                                <p class="text-xs font-semibold text-pm-blue">{{ $donation->paid_at ? $donation->paid_at->translatedFormat('d M Y') : '-' }}</p>
-                                <button type="button" class="mt-2 rounded-full bg-[#f8fafc] border border-[#e2e8f0] px-3 py-1 text-xs font-semibold text-pm-blue select-btn">Pilih</button>
+                                <p class="text-xs font-semibold text-brand">{{ $donation->paid_at ? $donation->paid_at->translatedFormat('d M Y') : '-' }}</p>
+                                <button type="button" class="mt-2 rounded-full bg-canvas border border-line px-3 py-1 text-xs font-semibold text-brand select-btn">Pilih</button>
                             </div>
                         </div>
                     @empty
-                        <div class="text-center py-8 text-sm text-[#64748b]">
+                        <div class="text-center py-8 text-sm text-muted">
                             Belum ada donasi berstatus lunas (Paid).
                         </div>
                     @endforelse
@@ -61,33 +61,33 @@
 
             <!-- Panel Kanan: Preview & Template -->
             <div class="w-full lg:w-1/2 flex flex-col bg-[#ffffff]">
-                <div class="p-5 border-b border-[#e2e8f0] shrink-0">
-                    <h3 class="font-semibold text-[#1e293b]">Kirim Pesan WhatsApp</h3>
-                    <p class="text-xs text-[#64748b] mt-1">Pilih donatur di panel kiri, lalu pilih template pesan.</p>
+                <div class="p-5 border-b border-line shrink-0">
+                    <h3 class="font-semibold text-ink">Kirim Pesan WhatsApp</h3>
+                    <p class="text-xs text-muted mt-1">Pilih donatur di panel kiri, lalu pilih template pesan.</p>
                 </div>
                 
                 <div class="flex-1 lg:overflow-y-auto p-5 relative lg:max-h-[600px]">
                     <!-- Placeholder when no donation selected -->
                     <div id="empty-selection" class="absolute inset-0 flex items-center justify-center flex-col p-8 text-center bg-[#ffffff] z-10">
-                        <div class="h-16 w-16 rounded-full bg-[#eef5ff] text-pm-blue flex items-center justify-center mb-4">
+                        <div class="h-16 w-16 rounded-full bg-brand-soft text-brand flex items-center justify-center mb-4">
                             <svg class="h-8 w-8" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
                                 <path stroke-linecap="round" stroke-linejoin="round" d="M8 12h.01M12 12h.01M16 12h.01M21 12c0 4.418-4.03 8-9 8a9.863 9.863 0 01-4.255-.949L3 20l1.395-3.72C3.512 15.042 3 13.574 3 12c0-4.418 4.03-8 9-8s9 3.582 9 8z" />
                             </svg>
                         </div>
-                        <p class="text-[#64748b] font-semibold text-sm">Pilih donasi di sebelah kiri untuk mulai membalas.</p>
+                        <p class="text-muted font-semibold text-sm">Pilih donasi di sebelah kiri untuk mulai membalas.</p>
                     </div>
 
                     <!-- Action Panel -->
                     <div id="action-panel" class="hidden space-y-6">
-                        <div class="rounded-xl border border-[#e2e8f0] bg-white p-4">
-                            <p class="text-[10px] uppercase tracking-wider text-pm-muted mb-2 font-semibold">Donatur Terpilih</p>
-                            <p id="sel-nama" class="font-semibold text-[#1e293b] text-lg">-</p>
-                            <p id="sel-phone" class="text-sm text-[#64748b] mt-1">-</p>
+                        <div class="rounded-xl border border-line bg-white p-4">
+                            <p class="text-[10px] uppercase tracking-wider text-muted mb-2 font-semibold">Donatur Terpilih</p>
+                            <p id="sel-nama" class="font-semibold text-ink text-lg">-</p>
+                            <p id="sel-phone" class="text-sm text-muted mt-1">-</p>
                         </div>
 
                         <div>
-                            <label class="block text-xs font-semibold text-[#64748b] mb-2">Pilih Template</label>
-                            <select id="template-select" class="w-full rounded-xl border border-[#e2e8f0] px-4 py-2.5 text-sm outline-none focus:border-pm-blue bg-white">
+                            <label class="block text-xs font-semibold text-muted mb-2">Pilih Template</label>
+                            <select id="template-select" class="w-full rounded-xl border border-line px-4 py-2.5 text-sm outline-none focus:border-brand bg-white">
                                 <option value="">-- Pilih Template Pesan --</option>
                                 @foreach($templates as $template)
                                     <option value="{{ $template->message }}">{{ $template->title }}</option>
@@ -96,8 +96,8 @@
                         </div>
 
                         <div>
-                            <label class="block text-xs font-semibold text-[#64748b] mb-2">Preview Pesan</label>
-                            <textarea id="message-preview" rows="8" class="w-full rounded-xl border border-[#e2e8f0] px-4 py-3 text-sm outline-none focus:border-pm-blue bg-white leading-relaxed text-[#334155]" placeholder="Isi pesan akan tampil di sini..." readonly></textarea>
+                            <label class="block text-xs font-semibold text-muted mb-2">Preview Pesan</label>
+                            <textarea id="message-preview" rows="8" class="w-full rounded-xl border border-line px-4 py-3 text-sm outline-none focus:border-brand bg-white leading-relaxed text-ink-soft" placeholder="Isi pesan akan tampil di sini..." readonly></textarea>
                         </div>
 
                         <button type="button" id="btn-send" class="w-full rounded-full bg-[#25D366] px-5 py-3 text-sm font-bold text-white transition hover:bg-[#128C7E] flex items-center justify-center gap-2 opacity-50 cursor-not-allowed" disabled>
@@ -129,8 +129,8 @@
 
             items.forEach(item => {
                 item.addEventListener('click', function () {
-                    items.forEach(i => i.classList.remove('border-pm-blue', 'bg-[#f8fafc]'));
-                    this.classList.add('border-pm-blue', 'bg-[#f8fafc]');
+                    items.forEach(i => i.classList.remove('border-brand', 'bg-canvas'));
+                    this.classList.add('border-brand', 'bg-canvas');
                     
                     currentData = JSON.parse(this.dataset.donation);
                     

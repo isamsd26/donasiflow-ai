@@ -8,66 +8,64 @@
             ->values();
     @endphp
 
-    <div class="mx-auto w-[min(1120px,calc(100%-1rem))] space-y-5">
-        <section class="rounded-[24px] bg-[linear-gradient(135deg,#1e293b,#059669)] px-5 py-6 text-white shadow-[0_18px_40px_rgba(15,23,42,0.16)] sm:rounded-[30px] sm:px-8 sm:py-8">
-            <p class="text-[11px] uppercase tracking-[0.28em] text-emerald-100">{{ $page['eyebrow'] }}</p>
-            <h1 class="mt-3 font-display text-[2.55rem] leading-none sm:text-[3.4rem]">{{ $page['title'] }}</h1>
-            <p class="mt-4 max-w-3xl text-sm leading-7 text-emerald-50/90">{{ $page['intro'] }}</p>
-        </section>
+    <section class="border-b border-line bg-canvas py-10 sm:py-12">
+        <div class="mx-auto w-full max-w-5xl px-4 sm:px-6 lg:px-8">
+            <p class="text-xs font-medium text-brand">{{ $page['eyebrow'] }}</p>
+            <h1 class="mt-2 font-display text-3xl font-semibold leading-tight text-ink sm:text-5xl">{{ $page['title'] }}</h1>
+            <p class="mt-3 max-w-2xl text-sm leading-7 text-muted sm:text-base">{{ $page['intro'] }}</p>
+        </div>
+    </section>
 
-        <section class="grid gap-5 lg:grid-cols-[0.85fr_1.15fr]">
-            <aside class="rounded-[24px] bg-white px-4 py-5 shadow-[0_16px_34px_rgba(15,23,42,0.08)] sm:rounded-[28px] sm:px-5 sm:py-6">
-                <p class="text-[10px] font-semibold uppercase tracking-[0.18em] text-pm-blue">Navigasi Publik</p>
-                <div class="mt-4 space-y-2">
+    <section class="bg-surface py-10 sm:py-12">
+        <div class="mx-auto grid w-full max-w-5xl gap-8 px-4 sm:px-6 lg:grid-cols-[220px_1fr] lg:items-start lg:px-8">
+            <aside class="rounded-xl border border-line bg-canvas p-4">
+                <p class="px-2 text-xs font-semibold text-ink">Halaman lainnya</p>
+                <nav class="mt-3 space-y-1">
                     @foreach ($navigation as $item)
                         <a
                             href="{{ route($item['route'], $item['params'] ?? []) }}"
-                            class="flex items-center justify-between rounded-2xl border border-[#e2e8f0] px-4 py-3 text-sm font-medium text-[#334155] hover:border-pm-blue hover:text-pm-blue"
+                            class="flex items-center justify-between rounded-md px-2.5 py-2 text-xs font-medium text-muted transition-colors hover:bg-surface hover:text-ink"
                         >
                             <span>{{ $item['label'] }}</span>
                             <span>&rsaquo;</span>
                         </a>
                     @endforeach
-                </div>
+                </nav>
             </aside>
 
-            <div class="space-y-4">
-                <article class="rounded-[24px] bg-white px-4 py-5 shadow-[0_16px_34px_rgba(15,23,42,0.08)] sm:rounded-[28px] sm:px-5 sm:py-6">
-                    <h2 class="font-display text-[2rem] leading-none text-[#1e293b] sm:text-3xl">{{ $page['title'] }}</h2>
+            <div class="space-y-6">
+                <article class="rounded-xl border border-line bg-surface p-6 sm:p-8">
                     @if ($page['slug'] === 'faq' && ! empty($page['faq_items']))
-                        <div class="mt-5 space-y-3">
+                        <div class="divide-y divide-line">
                             @foreach ($page['faq_items'] as $item)
-                                <article class="rounded-[22px] border border-[#e2e8f0] bg-[#ffffff] px-4 py-4">
-                                    <h3 class="text-base font-semibold text-[#1e293b]">{{ $item['question'] }}</h3>
-                                    <p class="mt-2 text-sm leading-7 text-[#334155]">{{ $item['answer'] }}</p>
-                                </article>
+                                <div class="py-5 first:pt-0 last:pb-0">
+                                    <h2 class="text-base font-semibold text-ink">{{ $item['question'] }}</h2>
+                                    <p class="mt-2 text-sm leading-7 text-muted">{{ $item['answer'] }}</p>
+                                </div>
                             @endforeach
                         </div>
                     @else
-                        <div class="mt-4 space-y-4 text-sm leading-7 text-[#334155]">
+                        <div class="max-w-2xl space-y-4 text-sm leading-7 text-ink-soft sm:text-base">
                             @forelse ($paragraphs as $paragraph)
                                 <p>{{ $paragraph }}</p>
                             @empty
-                                <p>Konten halaman ini belum diisi dari CMS.</p>
+                                <p class="text-muted">Konten halaman ini belum diisi.</p>
                             @endforelse
                         </div>
                     @endif
                 </article>
 
                 @if ($page['slug'] === 'contact' && ! empty($page['contact_cards']))
-                    <article class="rounded-[24px] bg-white px-4 py-5 shadow-[0_16px_34px_rgba(15,23,42,0.08)] sm:rounded-[28px] sm:px-5 sm:py-6">
-                        <p class="text-[10px] font-semibold uppercase tracking-[0.18em] text-pm-blue">Kontak Terstruktur</p>
-                        <div class="mt-4 grid gap-3 sm:grid-cols-2">
-                            @foreach ($page['contact_cards'] as $item)
-                                <div class="rounded-2xl border border-[#e2e8f0] bg-[#ffffff] px-4 py-4">
-                                    <p class="text-[10px] uppercase tracking-[0.14em] text-pm-muted">{{ $item['label'] }}</p>
-                                    <p class="mt-2 text-sm font-semibold leading-6 text-[#1e293b]">{{ $item['value'] }}</p>
-                                </div>
-                            @endforeach
-                        </div>
-                    </article>
+                    <div class="grid gap-4 sm:grid-cols-2">
+                        @foreach ($page['contact_cards'] as $item)
+                            <div class="rounded-xl border border-line bg-canvas p-5">
+                                <p class="text-xs text-muted">{{ $item['label'] }}</p>
+                                <p class="mt-1.5 text-sm font-semibold leading-6 text-ink">{{ $item['value'] }}</p>
+                            </div>
+                        @endforeach
+                    </div>
                 @endif
             </div>
-        </section>
-    </div>
+        </div>
+    </section>
 @endsection

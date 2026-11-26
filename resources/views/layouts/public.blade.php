@@ -8,17 +8,17 @@
         <meta name="description" content="{{ $site['description'] ?? '' }}">
 
         <link rel="preconnect" href="https://fonts.bunny.net">
-        <link href="https://fonts.bunny.net/css?family=oswald:400,500,600,700|instrument-sans:400,500,600,700" rel="stylesheet" />
+        <link href="https://fonts.bunny.net/css?family=newsreader:400,500,600,700,400i|plus-jakarta-sans:400,500,600,700|jetbrains-mono:400,500,600" rel="stylesheet" />
 
         @vite(['resources/css/app.css', 'resources/js/app.js'])
 
         @stack('styles')
     </head>
-    <body>
-        <div class="flex min-h-screen flex-col bg-slate-50 py-6">
+    <body class="bg-canvas text-ink">
+        <div class="flex min-h-screen flex-col">
             @include('layouts.partials.public-header')
 
-            <main class="mt-4 flex-1">
+            <main class="flex-1">
                 @yield('content')
             </main>
 
