@@ -10,6 +10,7 @@ use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Http\JsonResponse;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Http;
+use Illuminate\Support\Facades\Log;
 use Illuminate\Validation\Rule;
 
 class AiAnalystController extends AdminController
@@ -34,17 +35,23 @@ class AiAnalystController extends AdminController
         $financialContext = $this->buildFinancialContext($filters);
 
         $aiServiceUrl = config('services.ai_service.url', 'http://127.0.0.1:8001');
+        $aiServiceSecret = (string) config('services.ai_service.secret', '');
         $timeout = (int) config('services.ai_service.timeout', 45);
         @set_time_limit($timeout + 15);
 
         try {
-            $response = Http::timeout($timeout)
-                ->acceptJson()
-                ->post("{$aiServiceUrl}/api/analyze-finance", [
-                    'question' => $validated['question'],
-                    'filters' => (object) array_filter($filters, fn ($value) => $value !== null && $value !== ''),
-                    'financial_context' => $financialContext,
+            $httpClient = Http::timeout($timeout)->acceptJson();
+            if ($aiServiceSecret !== '') {
+                $httpClient = $httpClient->withHeaders([
+                    'X-AI-Service-Key' => $aiServiceSecret,
                 ]);
+            }
+
+            $response = $httpClient->post("{$aiServiceUrl}/api/analyze-finance", [
+                'question' => $validated['question'],
+                'filters' => (object) array_filter($filters, fn ($value) => $value !== null && $value !== ''),
+                'financial_context' => $financialContext,
+            ]);
 
             if (! $response->successful()) {
                 return response()->json([
@@ -55,12 +62,33 @@ class AiAnalystController extends AdminController
 
             $payload = $response->json();
 
+            if (($payload['status'] ?? '') === 'out_of_scope') {
+                Log::info('ai_analyst.out_of_scope', [
+                    'admin_id' => $request->user()?->id,
+                    'guardrail_layer' => $payload['guardrail_layer'] ?? 'guardrail',
+                    'telemetry' => $payload['telemetry'] ?? [],
+                ]);
+
+                return response()->json([
+                    'status' => 'out_of_scope',
+                    'guardrail_layer' => $payload['guardrail_layer'] ?? 'guardrail',
+                    'message' => $payload['message'] ?? 'Pertanyaan berada di luar cakupan analis laporan keuangan.',
+                    'telemetry' => $payload['telemetry'] ?? null,
+                ]);
+            }
+
             if (($payload['status'] ?? 'error') !== 'success') {
                 return response()->json([
                     'status' => 'error',
                     'message' => $payload['message'] ?? 'Terjadi kendala saat memproses analisis AI.',
                 ], 502);
             }
+
+            Log::info('ai_analyst.success', [
+                'admin_id' => $request->user()?->id,
+                'model_used' => $payload['model_used'] ?? 'gemini',
+                'telemetry' => $payload['telemetry'] ?? [],
+            ]);
 
             $criticalCount = collect($financialContext['campaigns_overview'] ?? [])
                 ->where('health_flag', 'kritis_mendesak_butuh_boost')
@@ -70,6 +98,7 @@ class AiAnalystController extends AdminController
                 'status' => 'success',
                 'model_used' => $payload['model_used'] ?? 'gemini',
                 'ai_response' => $payload['ai_response'] ?? '',
+                'telemetry' => $payload['telemetry'] ?? null,
                 'context_summary' => [
                     'filtered_total_rows' => $financialContext['filtered_scope']['total_transactions'] ?? 0,
                     'filtered_paid_tx' => $financialContext['filtered_scope']['paid_transactions'] ?? 0,
@@ -217,13 +246,13 @@ class AiAnalystController extends AdminController
             ];
         })->all();
 
-        // Donor Segmentation & Retention (based on paid donations in filtered scope)
+        // Donor Segmentation & Retention (PII masked before leaving server to external LLM)
         $donorGrouping = $paidFiltered
             ->groupBy(fn (Donation $d) => $d->donor_email ?: ($d->donor_phone ?: $d->donor_name))
             ->map(function ($items) {
                 $first = $items->first();
                 return [
-                    'donor_name' => $first->donor_name,
+                    'donor_label' => $this->maskDonorName((string) ($first->donor_name ?? ''), (bool) $first->is_anonymous),
                     'is_anonymous_habit' => (bool) $first->is_anonymous,
                     'tx_count' => $items->count(),
                     'total_donated_amount' => (int) $items->sum('amount'),
@@ -279,5 +308,19 @@ class AiAnalystController extends AdminController
                 'top_10_donors' => $donorGrouping->take(10)->values()->all(),
             ],
         ];
+    }
+
+    private function maskDonorName(string $name, bool $isAnonymous): string
+    {
+        $trimmed = trim($name);
+        if ($isAnonymous || $trimmed === '' || strcasecmp($trimmed, 'Hamba Allah') === 0) {
+            return 'Anonim';
+        }
+
+        $parts = preg_split('/\s+/', $trimmed) ?: [];
+
+        return collect($parts)
+            ->map(fn (string $word): string => mb_substr($word, 0, 1) . '***')
+            ->implode(' ');
     }
 }

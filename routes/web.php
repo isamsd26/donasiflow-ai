@@ -115,7 +115,9 @@ Route::prefix('admin')->name('admin.')->group(function () {
     Route::get('/donations', [DonationController::class, 'index'])->name('donations');
     Route::post('/donations/manual', [DonationController::class, 'storeManual'])->name('donations.manual.store');
     Route::get('/donations/export', [DonationController::class, 'export'])->name('donations.export');
-    Route::post('/ai-analyst/ask', [\App\Http\Controllers\Admin\AiAnalystController::class, 'ask'])->name('ai-analyst.ask');
+    Route::post('/ai-analyst/ask', [\App\Http\Controllers\Admin\AiAnalystController::class, 'ask'])
+        ->middleware('throttle:15,1')
+        ->name('ai-analyst.ask');
     Route::get('/donations/{donation}', [DonationController::class, 'show'])->name('donations.show');
     Route::patch('/donations/{donation}/status', [DonationController::class, 'updateStatus'])->name('donations.status');
     Route::get('/donors', [DonorController::class, 'index'])->name('donors');

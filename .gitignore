@@ -27,4 +27,6 @@ github-actions-deploy.pub
 /.venv
 __pycache__/
 *.pyc
+.pytest_cache/
+/ai-service/logs/
 /LAPORAN_AUDIT_WHITELABEL_AI.*

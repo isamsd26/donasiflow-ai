@@ -528,6 +528,17 @@
                     <p id="ai-error-message" class="mt-1 leading-relaxed break-words"></p>
                 </div>
 
+                {{-- Out-of-Scope Guardrail State --}}
+                <div id="ai-guardrail-state" class="hidden rounded-xl border border-ochre/35 bg-surface overflow-hidden">
+                    <div class="border-l-[3px] border-ochre px-5 py-4 sm:px-6 sm:py-5">
+                        <p class="text-xs font-semibold text-ochre-ink">Pertanyaan di luar cakupan analis</p>
+                        <p id="ai-guardrail-message" class="mt-1.5 text-xs leading-relaxed text-ink sm:text-sm"></p>
+                        <p class="mt-3 border-t border-line pt-3 text-xs text-muted">
+                            Topik yang didukung: <strong class="text-ink">arus kas &amp; tren bulanan</strong>, <strong class="text-ink">kampanye kritis</strong>, <strong class="text-ink">konversi kanal pembayaran</strong>, dan <strong class="text-ink">retensi donatur VIP</strong>.
+                        </p>
+                    </div>
+                </div>
+
                 {{-- Document-Style Brief Output --}}
                 <article id="ai-result-container" class="hidden overflow-hidden rounded-xl border border-line bg-surface">
                     <div class="flex flex-wrap items-center justify-between gap-3 border-b border-line px-5 py-4 sm:px-6">
@@ -640,6 +651,8 @@
         const aiEmptyState = document.getElementById('ai-empty-state');
         const aiErrorState = document.getElementById('ai-error-state');
         const aiErrorMessage = document.getElementById('ai-error-message');
+        const aiGuardrailState = document.getElementById('ai-guardrail-state');
+        const aiGuardrailMessage = document.getElementById('ai-guardrail-message');
         const aiResultContainer = document.getElementById('ai-result-container');
         const aiResultContent = document.getElementById('ai-result-content');
         const aiModelBadge = document.getElementById('ai-model-badge');
@@ -866,6 +879,7 @@
             aiEmptyState?.classList.add('hidden');
             aiLoadingState?.classList.remove('hidden');
             aiErrorState?.classList.add('hidden');
+            aiGuardrailState?.classList.add('hidden');
             aiResultContainer?.classList.add('hidden');
             if (aiSubmitBtn) aiSubmitBtn.disabled = true;
             if (aiSubmitBtnText) aiSubmitBtnText.textContent = 'Menyusun...';
@@ -888,6 +902,14 @@
                 });
 
                 const data = await response.json();
+
+                if (response.ok && data.status === 'out_of_scope') {
+                    if (aiGuardrailMessage) {
+                        aiGuardrailMessage.textContent = data.message || 'Pertanyaan berada di luar cakupan analis laporan keuangan.';
+                    }
+                    aiGuardrailState?.classList.remove('hidden');
+                    return;
+                }
 
                 if (!response.ok || data.status !== 'success') {
                     throw new Error(data.message || 'Gagal memperoleh respons dari layanan analis.');
