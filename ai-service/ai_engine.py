@@ -7,6 +7,7 @@ from datetime import datetime, timezone
 from pathlib import Path
 from dotenv import load_dotenv
 from google import genai
+from google.genai import types
 
 # Muat file .env dari root proyek (naik 1 folder dari ai-service)
 load_dotenv(os.path.join(os.path.dirname(__file__), '..', '.env'))
@@ -19,6 +20,7 @@ if not logger.handlers:
     logger.setLevel(logging.INFO)
 
 TELEMETRY_LOG_PATH = Path(__file__).resolve().parent / "logs" / "ai_telemetry.jsonl"
+PER_MODEL_TIMEOUT_MS = int(os.getenv("AI_MODEL_TIMEOUT_MS", "15000"))
 
 _client = None
 
@@ -27,14 +29,17 @@ def _get_client():
     global _client
     if _client is None:
         api_key = os.getenv("GEMINI_API_KEY")
-        _client = genai.Client(api_key=api_key)
+        _client = genai.Client(
+            api_key=api_key,
+            http_options=types.HttpOptions(timeout=PER_MODEL_TIMEOUT_MS),
+        )
     return _client
 
 
-# Daftar prioritas model (otomatis fallback jika model utama mengalami 503 High Demand)
+# Daftar prioritas model (otomatis fallback cepat jika model utama 503 / lambat > 15s)
 FALLBACK_MODELS = [
     "gemini-3.1-flash-lite",
-    "gemini-3.8-flash",
+    "gemini-2.5-flash",
     "gemini-2.5-flash-lite",
 ]
 

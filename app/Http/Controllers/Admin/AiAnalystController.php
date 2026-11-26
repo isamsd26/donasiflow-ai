@@ -108,10 +108,14 @@ class AiAnalystController extends AdminController
                 ],
             ]);
         } catch (\Throwable $e) {
+            $isTimeout = str_contains($e->getMessage(), 'cURL error 28') || str_contains(strtolower($e->getMessage()), 'timed out');
+
             return response()->json([
                 'status' => 'error',
-                'message' => 'Tidak dapat terhubung ke microservice AI FastAPI di ' . $aiServiceUrl . '. Pastikan server uvicorn sedang berjalan. Detail: ' . $e->getMessage(),
-            ], 503);
+                'message' => $isTimeout
+                    ? 'Permintaan ke model Gemini melebihi batas waktu (' . $timeout . ' detik) karena antrean API sedang padat. Silakan klik ulang "Buat ringkasan".'
+                    : 'Tidak dapat terhubung ke microservice AI FastAPI di ' . $aiServiceUrl . '. Pastikan server uvicorn sedang berjalan. Detail: ' . $e->getMessage(),
+            ], $isTimeout ? 504 : 503);
         }
     }
 
