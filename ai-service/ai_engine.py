@@ -39,8 +39,8 @@ def _get_client():
 # Daftar prioritas model (otomatis fallback cepat jika model utama 503 / lambat > 15s)
 FALLBACK_MODELS = [
     "gemini-3.1-flash-lite",
-    "gemini-2.5-flash",
-    "gemini-2.5-flash-lite",
+    "gemini-3.5-flash-lite",
+    "gemini-3.5-flash",
 ]
 
 DEFAULT_OUT_OF_SCOPE_MSG = (
